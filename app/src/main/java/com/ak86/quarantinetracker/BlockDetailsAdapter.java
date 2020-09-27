@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,10 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
         holder.blockName.setText(block.getBlockName());
         holder.blockInCharge.setText(block.getBlockInCharge());
         holder.blockCapacity.setText(String.valueOf(block.getBlockCapacity()));
+        holder.blockOccupied.setText(String.valueOf(block.getBlockOccupied()));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+        holder.blockEndDate.setText(sdf.format(block.getQuarantineEndDate()));
+        holder.blockMedDate.setText(sdf.format(block.getMedicalDate()));
 
 
 
@@ -50,12 +55,15 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
 
     public class BlockViewHolder extends RecyclerView.ViewHolder{
 
-        TextView blockName, blockInCharge, blockCapacity;
+        TextView blockName, blockInCharge, blockCapacity, blockOccupied, blockEndDate, blockMedDate;
         public BlockViewHolder(View itemView){
             super(itemView);
-            blockName = itemView.findViewById(R.id.detailBlockNameFd);
+            blockName = itemView.findViewById(R.id.personNameFd);
             blockInCharge = itemView.findViewById(R.id.detailBlockICNameFd);
             blockCapacity = itemView.findViewById(R.id.detailBlockCapacityFd);
+            blockOccupied = itemView.findViewById(R.id.detailBlockOccupiedFd);
+            blockEndDate = itemView.findViewById(R.id.detailQuarantineEndDate);
+            blockMedDate = itemView.findViewById(R.id.detailMedDateFd);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {

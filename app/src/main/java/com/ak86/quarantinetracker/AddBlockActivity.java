@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AddBlockActivity extends AppCompatActivity {
 
@@ -44,7 +46,7 @@ public class AddBlockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_block);
-        fdBlockName = (EditText) findViewById(R.id.detailBlockNameFd);
+        fdBlockName = (EditText) findViewById(R.id.personNameFd);
         fdBlockDescr = (EditText) findViewById(R.id.blockDescr);
         numberPicker = findViewById(R.id.numberPicker);
         progressBar = findViewById(R.id.progressBar2);
@@ -99,8 +101,8 @@ public class AddBlockActivity extends AppCompatActivity {
          String blockName, blockDescr, blockInCharge = null;
          int blockCapacity;
 
-         blockName = fdBlockName.getText().toString();
-         blockDescr = fdBlockDescr.getText().toString();
+         blockName = fdBlockName.getText().toString().trim();
+         blockDescr = fdBlockDescr.getText().toString().trim();
          blockCapacity = numberPicker.getValue() + 1;
          if(spinner != null && spinner.getSelectedItem() != null) {
             blockInCharge = spinner.getSelectedItem().toString();
@@ -113,7 +115,7 @@ public class AddBlockActivity extends AppCompatActivity {
              if (progressBar != null) {
                  progressBar.setVisibility(View.VISIBLE);
              }
-             Block newBlock = new Block(blockName, blockDescr, blockCapacity, blockInCharge);
+             Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0,Date.from(Instant.EPOCH), Date.from(Instant.EPOCH));
              databaseReference.child("blocks").child(blockName).setValue(newBlock)
                      .addOnSuccessListener(new OnSuccessListener<Void>(){
                  @Override

@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/marg"
+        android:id="@+id/nameConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="20"
@@ -18,11 +18,11 @@
         android:layout_marginRight="20dp"
         android:elevation="4dp"
         android:background="@android:color/background_light"
-        app:layout_constraintBottom_toTopOf="@+id/detailBlockNameFd"
-        app:layout_constraintTop_toTopOf="@+id/detailBlockNameFd">
+        app:layout_constraintBottom_toTopOf="@+id/personNameFd"
+        app:layout_constraintTop_toTopOf="@+id/personNameFd">
 
         <EditText
-            android:id="@+id/detailBlockNameFd"
+            android:id="@+id/personNameFd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -43,8 +43,8 @@
             android:text="Enter Block Name"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/detailBlockNameFd"
-            app:layout_constraintStart_toStartOf="@+id/detailBlockNameFd"
+            app:layout_constraintBottom_toTopOf="@+id/personNameFd"
+            app:layout_constraintStart_toStartOf="@+id/personNameFd"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

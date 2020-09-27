@@ -4,7 +4,20 @@
     <item
         android:id="@+id/addNewBlock"
         android:icon="@android:drawable/ic_input_add"
-        android:title="Add New Block" />
+        android:title="Add New Block"
+        android:visible="false"/>
+    <item android:id="@+id/editBlock"
+        android:title="Edit Block"
+        android:visible="false"/>
+    <item
+        android:id="@+id/deleteBlock"
+        android:title="Delete Block"
+        android:visible="false"/>
+    <item
+        android:id="@+id/addBarrackType"
+        android:title="Add Barrack Type"
+        android:visible="false"/>
+   
     <item
         android:id="@+id/itemLogout"
         android:title="Logout" />

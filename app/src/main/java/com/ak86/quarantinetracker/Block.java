@@ -1,19 +1,28 @@
 package com.ak86.quarantinetracker;
 
+import java.util.Date;
+
 public class Block {
 
     private String blockName;
     private String blockDescr;
     private int blockCapacity;
     private String blockInCharge;
+    private int blockOccupied;
+    private Date quarantineEndDate;
+    private Date medicalDate;
+
 
     public Block(){}
 
-    public Block(String blockName, String blockDescr, int blockCapacity, String blockInCharge){
+    public Block(String blockName, String blockDescr, String blockInCharge, int blockCapacity, int blockOccupied, Date quarantineEndDate, Date medicalDate){
         this.blockName = blockName;
         this.blockDescr = blockDescr;
         this.blockCapacity = blockCapacity;
         this.blockInCharge = blockInCharge;
+        this.blockOccupied = blockOccupied;
+        this.quarantineEndDate = quarantineEndDate;
+        this.medicalDate = medicalDate;
     }
 
     public String getBlockName() {
@@ -47,5 +56,31 @@ public class Block {
     public void setBlockInCharge(String blockInCharge) {
         this.blockInCharge = blockInCharge;
     }
+
+
+    public int getBlockOccupied() {
+        return blockOccupied;
+    }
+
+    public void setBlockOccupied(int blockOccupied) {
+        this.blockOccupied = blockOccupied;
+    }
+
+    public Date getQuarantineEndDate() {
+        return quarantineEndDate;
+    }
+
+    public void setQuarantineEndDate(Date quarantineEndDate) {
+        this.quarantineEndDate = quarantineEndDate;
+    }
+
+    public Date getMedicalDate() {
+        return medicalDate;
+    }
+
+    public void setMedicalDate(Date medicalDate) {
+        this.medicalDate = medicalDate;
+    }
+
 
 }

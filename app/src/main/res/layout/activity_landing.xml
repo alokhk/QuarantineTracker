@@ -7,6 +7,111 @@
     android:orientation="vertical"
     tools:context=".LandingActivity">
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#95AFBA"
+        android:elevation="10dp">
+
+        <TableLayout
+            android:id="@+id/overallSummaryTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:textAlignment="center">
+
+                <TextView
+                    android:foregroundGravity="center"
+                    android:gravity="center"
+                    android:text="Overall Summary"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#3B0D11"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:textAlignment="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Quarantine Blocks"
+                    android:textColor="#3B0D11"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalQuarantineBlocksFd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="no of blocks" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:textAlignment="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Capacity"
+                    android:textColor="#3B0D11"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalCapacityFd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="total capacity" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:textAlignment="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Quarantined"
+                    android:textColor="#3B0D11"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalQuarantinedFd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="total quarantined" />
+            </TableRow>
+
+            <TableRow></TableRow>
+
+
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

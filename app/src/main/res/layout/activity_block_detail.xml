@@ -8,47 +8,52 @@
     tools:context=".BlockDetailActivity" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAddPerson"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddPerson">
 
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+        <Button
+            android:id="@+id/btnAddPerson"
+            android:layout_width="135dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:background="#3F7CAC"
+            android:lineSpacingExtra="12sp"
+            android:text="Add Person"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.166" />
+
+        <Button
+            android:id="@+id/btnMedDt"
+            android:layout_width="135dp"
+            android:layout_height="40dp"
+            android:background="#3F7CAC"
+            android:text="Add Med Dt"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.942"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TableLayout
+            android:id="@+id/blockSummaryTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#3F7CAC"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:textAlignment="center">
-
-                <TextView
-                    android:id="@+id/detailBlockNameFd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:text="Summary"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="#3F51B5"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
+                android:id="@+id/ICRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
@@ -60,16 +65,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Block IC"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/detailBlockICNameFd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
             </TableRow>
 
             <TableRow
+                android:id="@+id/capacityRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -82,16 +91,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Capacity"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/detailBlockCapacityFd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
             </TableRow>
 
             <TableRow
+                android:id="@+id/occupiedRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -104,16 +117,49 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Occupied"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/detailBlockOccupiedFd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
             </TableRow>
 
         </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <TableLayout
+                    android:id="@+id/personDetailTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@color/cardview_dark_background"
+                    android:gravity="center_horizontal"
+                    />
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </ScrollView>
+
+
 </LinearLayout>

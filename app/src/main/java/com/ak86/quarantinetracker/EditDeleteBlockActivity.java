@@ -37,6 +37,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
     private int NUMBER_OF_VALUES = 100; //num of values in the picker
     private int PICKER_RANGE = 1;
     String[] displayedValues  = new String[NUMBER_OF_VALUES];
+    private Block blockToBeUpdated;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,12 +173,12 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
         }
     }
 
-    private void popupAndEditBlock(String blockName, DataSnapshot snapshot){
+    private void popupAndEditBlock(final String blockName, DataSnapshot snapshot){
         LayoutInflater li = LayoutInflater.from(EditDeleteBlockActivity.this);
         editBlock = li.inflate(R.layout.edit_block_popup, null);
-        TextView newBlockName = editBlock.findViewById(R.id.editTextBlockName);
-        TextView newBlockDescr = editBlock.findViewById(R.id.editTextBlockDescr);
-        NumberPicker newCapacity = editBlock.findViewById(R.id.numberPickerNewCapacity);
+        final TextView newBlockName = editBlock.findViewById(R.id.editTextBlockName);
+        final TextView newBlockDescr = editBlock.findViewById(R.id.editTextBlockDescr);
+        final NumberPicker newCapacity = editBlock.findViewById(R.id.numberPickerNewCapacity);
         newBlockIC = editBlock.findViewById(R.id.spinnerNewBlockIC);
         for(int i=0; i<NUMBER_OF_VALUES; i++)
             displayedValues[i] = String.valueOf(PICKER_RANGE * (i+1));
@@ -201,11 +202,12 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             }
         });
         for(DataSnapshot eachBlockInList : snapshot.getChildren()){
-            Block blockToBeUpdated = eachBlockInList.getValue(Block.class);
+            blockToBeUpdated = eachBlockInList.getValue(Block.class);
                 if(blockToBeUpdated.getBlockName().equals(blockName)){
                     newBlockName.setText(blockToBeUpdated.getBlockName());
                     newBlockDescr.setText(blockToBeUpdated.getBlockDescr());
                     newCapacity.setValue(blockToBeUpdated.getBlockCapacity()-1);
+
                     newBlockIC.setSelection(usersList.indexOf(blockToBeUpdated.getBlockInCharge()));
                     newBlockIC.setSelection(1);
             }
@@ -217,7 +219,19 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                final DatabaseReference updateBlockDR = FirebaseDatabase.getInstance().getReference();
+                                moveRecord(updateBlockDR.child(blockName.concat("People")),updateBlockDR.child(newBlockName.getText().toString().concat("People")));
+                                Block updatedBlock = new Block();
+                                updatedBlock.setBlockName(newBlockName.getText().toString());
+                                updatedBlock.setBlockDescr(newBlockDescr.getText().toString());
+                                updatedBlock.setBlockCapacity(newCapacity.getValue());
+                                updatedBlock.setBlockInCharge(newBlockIC.getSelectedItem().toString());
+                                updatedBlock.setBlockOccupied(blockToBeUpdated.getBlockOccupied());
+                                updatedBlock.setMedicalDate(blockToBeUpdated.getMedicalDate());
+                                updatedBlock.setQuarantineEndDate(blockToBeUpdated.getQuarantineEndDate());
+                                updateBlockDR.child("blocks").child(updatedBlock.getBlockName()).setValue(updatedBlock);
+                                updateBlockDR.child("blocks").child(blockName).removeValue();
+                                updateBlockDR.child(blockName.concat("People")).removeValue();
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -280,7 +294,30 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
         android.app.AlertDialog alertDialog = dialog.create();
         alertDialog.show();
     }
+    private void moveRecord(final DatabaseReference fromPath, final DatabaseReference toPath) {
+        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                        if (firebaseError != null) {
+                            System.out.println("Copy failed");
+                        } else {
+                            System.out.println("Success");
 
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     @Override
     public boolean onSupportNavigateUp(){
         finish();

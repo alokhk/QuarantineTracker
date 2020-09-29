@@ -26,18 +26,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+/*********************************This is an Admin function. Once blocks are created, they can be deleted or edited*******************************************************************************************************/
 public class EditDeleteBlockActivity extends AppCompatActivity {
 
     private TableLayout tableBlocksList;
     private DatabaseReference blockListReference;
     private ArrayList<String> usersList = new ArrayList<>();
-    private Spinner newBlockIC;
+    private ArrayList<String> barrackTypeList = new ArrayList<>();
+    private Spinner newBlockIC, newBlockDescr;
     private View editBlock;
     private int NUMBER_OF_VALUES = 100; //num of values in the picker
     private int PICKER_RANGE = 1;
     String[] displayedValues  = new String[NUMBER_OF_VALUES];
     private Block blockToBeUpdated;
+/*****************On Create, read list of block and display them on the screen.*************************************************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             }
         });
     }
-
+/****************************init the headers programatically*************************************************************************************/
     private void intializeTableHeader(){
         final TableLayout.LayoutParams lp =
                 new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
@@ -104,7 +106,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
         tableBlocksList.addView(headerRow,lp);
 
     }
-
+/***************Now fill up the table**************************************************************************************************/
     private void populateBlocksListInTable(final DataSnapshot snapshot){
         tableBlocksList.removeAllViews();
         intializeTableHeader();
@@ -147,7 +149,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             textViewBlockIC.setText(block.getBlockInCharge());
             textViewBlockIC.setGravity(Gravity.CENTER);
             tableRow.addView(textViewBlockIC);
-            /*********************** SERIAL NUMBER ************************/
+            /***********************  ADD A DELETE BUTTON************************/
             Button actionButton = new Button(getApplicationContext());
             actionButton.setText("Delete");
             actionButton.setTextSize(8);
@@ -159,6 +161,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                 }
             });
             tableRow.addView(actionButton);
+            //A long click pops up an edit menu
             tableRow.setOnLongClickListener(new View.OnLongClickListener() {
                                                 @Override
                                                 public boolean onLongClick(View v) {
@@ -172,28 +175,30 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             tableBlocksList.addView(tableRow,lp);
         }
     }
-
+/****************long press popup to edit*************************************************************************************************/
     private void popupAndEditBlock(final String blockName, DataSnapshot snapshot){
+        /*********************populate with existing data. read from cloud and fill up********************************************************************************************/
         LayoutInflater li = LayoutInflater.from(EditDeleteBlockActivity.this);
         editBlock = li.inflate(R.layout.edit_block_popup, null);
         final TextView newBlockName = editBlock.findViewById(R.id.editTextBlockName);
-        final TextView newBlockDescr = editBlock.findViewById(R.id.editTextBlockDescr);
         final NumberPicker newCapacity = editBlock.findViewById(R.id.numberPickerNewCapacity);
+        newBlockDescr = editBlock.findViewById(R.id.spinnerBlockDescr);
         newBlockIC = editBlock.findViewById(R.id.spinnerNewBlockIC);
         for(int i=0; i<NUMBER_OF_VALUES; i++)
             displayedValues[i] = String.valueOf(PICKER_RANGE * (i+1));
         newCapacity.setMinValue(0);
         newCapacity.setMaxValue(displayedValues.length-1);
         newCapacity.setDisplayedValues(displayedValues);
-        DatabaseReference userListDR = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference userListDR = FirebaseDatabase.getInstance().getReference();
         userListDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                usersList.clear();
                 for(DataSnapshot diffUsers : snapshot.getChildren()){
                     User aUser = diffUsers.getValue(User.class);
                     usersList.add(aUser.getEmailId());
                 }
-                setupSpinner();
+                setupUserSpinner();
             }
 
             @Override
@@ -201,17 +206,35 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
 
             }
         });
+        DatabaseReference barrackTypeDR = FirebaseDatabase.getInstance().getReference();
+        barrackTypeDR.child("barrackType").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                barrackTypeList.clear();
+                for (DataSnapshot diffBarracktypes : snapshot.getChildren()){
+                    barrackTypeList.add((String)diffBarracktypes.getValue());
+                }
+                setupBarrackTypeSpinner();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         for(DataSnapshot eachBlockInList : snapshot.getChildren()){
             blockToBeUpdated = eachBlockInList.getValue(Block.class);
                 if(blockToBeUpdated.getBlockName().equals(blockName)){
                     newBlockName.setText(blockToBeUpdated.getBlockName());
-                    newBlockDescr.setText(blockToBeUpdated.getBlockDescr());
+                    newBlockDescr.setSelection(barrackTypeList.indexOf(blockToBeUpdated.getBlockDescr()));
                     newCapacity.setValue(blockToBeUpdated.getBlockCapacity()-1);
-
                     newBlockIC.setSelection(usersList.indexOf(blockToBeUpdated.getBlockInCharge()));
-                    newBlockIC.setSelection(1);
             }
         }
+        /******When user changes the data existing, then first look at the changes. Then move the people data to ***********************************************************************************************************/
+        /******a corresponding node. mov record function, then create a new block with new data, copy details from existing***********************************************************************************************************/
+        /******lastly delete the old copies***********************************************************************************************************/
         AlertDialog.Builder builder = new AlertDialog.Builder(EditDeleteBlockActivity.this);
         builder.setView(editBlock);
         builder.setCancelable(false)
@@ -220,18 +243,22 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final DatabaseReference updateBlockDR = FirebaseDatabase.getInstance().getReference();
-                                moveRecord(updateBlockDR.child(blockName.concat("People")),updateBlockDR.child(newBlockName.getText().toString().concat("People")));
+                                if(!blockName.equals(newBlockName.getText().toString())){
+                                    moveRecord(updateBlockDR.child(blockName.concat("People")),updateBlockDR.child(newBlockName.getText().toString().concat("People")));
+                                    updateBlockDR.child(blockName.concat("People")).removeValue();
+                                }
                                 Block updatedBlock = new Block();
                                 updatedBlock.setBlockName(newBlockName.getText().toString());
-                                updatedBlock.setBlockDescr(newBlockDescr.getText().toString());
-                                updatedBlock.setBlockCapacity(newCapacity.getValue());
+                                updatedBlock.setBlockDescr(newBlockDescr.getSelectedItem().toString());
+                                updatedBlock.setBlockCapacity(newCapacity.getValue()+1);
                                 updatedBlock.setBlockInCharge(newBlockIC.getSelectedItem().toString());
                                 updatedBlock.setBlockOccupied(blockToBeUpdated.getBlockOccupied());
                                 updatedBlock.setMedicalDate(blockToBeUpdated.getMedicalDate());
                                 updatedBlock.setQuarantineEndDate(blockToBeUpdated.getQuarantineEndDate());
                                 updateBlockDR.child("blocks").child(updatedBlock.getBlockName()).setValue(updatedBlock);
-                                updateBlockDR.child("blocks").child(blockName).removeValue();
-                                updateBlockDR.child(blockName.concat("People")).removeValue();
+                                if(!blockName.equals(newBlockName.getText().toString())) {
+                                    updateBlockDR.child("blocks").child(blockName).removeValue();
+                                }
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -246,13 +273,20 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
 
     }
 
-    private void setupSpinner()
+    private void setupUserSpinner()
     {
-        newBlockIC = editBlock.findViewById(R.id.spinnerNewBlockIC) ;
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,usersList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         newBlockIC.setAdapter(arrayAdapter);
     }
+
+    private void setupBarrackTypeSpinner()
+    {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,barrackTypeList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        newBlockDescr.setAdapter(arrayAdapter);
+    }
+/************Delete the selected block. After deleting the block, delete corresponding people node also*****************************************************************************************************/
     private void deleteBlock(final String blockName){
         android.app.AlertDialog.Builder dialog=new android.app.AlertDialog.Builder(this);
         dialog.setMessage(" Confirm Delete? Details of People in Block will also be deleted! ");
@@ -294,6 +328,8 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
         android.app.AlertDialog alertDialog = dialog.create();
         alertDialog.show();
     }
+/************people node is a top level node, as in under "/", so use a func to move record keeping data same *****************************************************************************************************/
+/************to a new node with updated Key as in /CLK -> /CLH*****************************************************************************************************/
     private void moveRecord(final DatabaseReference fromPath, final DatabaseReference toPath) {
         fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

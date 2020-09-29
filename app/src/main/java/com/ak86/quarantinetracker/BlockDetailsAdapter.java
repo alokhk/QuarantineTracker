@@ -37,12 +37,19 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
     public void onBindViewHolder(@NonNull BlockViewHolder holder, int position) {
         Block block = blockList.get(position);
         holder.blockName.setText(block.getBlockName());
+        holder.blockDescr.setText(block.getBlockDescr());
         holder.blockInCharge.setText(block.getBlockInCharge());
         holder.blockCapacity.setText(String.valueOf(block.getBlockCapacity()));
         holder.blockOccupied.setText(String.valueOf(block.getBlockOccupied()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
         holder.blockEndDate.setText(sdf.format(block.getQuarantineEndDate()));
         holder.blockMedDate.setText(sdf.format(block.getMedicalDate()));
+        if(block.getBlockDescr().equals("Isolation") || block.getBlockDescr().equals("Holding") ){
+            holder.blockEndDate.setVisibility(View.GONE);
+            holder.blockMedDate.setVisibility(View.GONE);
+            holder.tvQE.setVisibility(View.GONE);
+            holder.tvMD.setVisibility(View.GONE);
+        }
 
 
 
@@ -55,15 +62,18 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
 
     public class BlockViewHolder extends RecyclerView.ViewHolder{
 
-        TextView blockName, blockInCharge, blockCapacity, blockOccupied, blockEndDate, blockMedDate;
+        TextView blockName, blockDescr, blockInCharge, blockCapacity, blockOccupied, blockEndDate, blockMedDate, tvQE, tvMD;
         public BlockViewHolder(View itemView){
             super(itemView);
             blockName = itemView.findViewById(R.id.personNameFd);
+            blockDescr = itemView.findViewById(R.id.blockDescrFd);
             blockInCharge = itemView.findViewById(R.id.detailBlockICNameFd);
             blockCapacity = itemView.findViewById(R.id.detailBlockCapacityFd);
             blockOccupied = itemView.findViewById(R.id.detailBlockOccupiedFd);
             blockEndDate = itemView.findViewById(R.id.detailQuarantineEndDate);
             blockMedDate = itemView.findViewById(R.id.detailMedDateFd);
+            tvQE = itemView.findViewById(R.id.tvQuarantineEnds);
+            tvMD = itemView.findViewById(R.id.tvMedDate);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {

@@ -10,6 +10,7 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="Edit Block"
         android:textColor="#3F7CAC"
         android:textSize="24sp" />
@@ -18,17 +19,16 @@
         android:id="@+id/editTextBlockName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Block Name"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/editTextBlockDescr"
+    <Spinner
+        android:id="@+id/spinnerBlockDescr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Block Descr"
-        android:inputType="textPersonName" />
+        android:layout_marginBottom="20dp" />
 
     <NumberPicker
         android:id="@+id/numberPickerNewCapacity"

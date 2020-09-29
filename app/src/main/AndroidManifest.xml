@@ -9,8 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditDeleteBlockActivity"></activity>
-        <activity android:name=".BarrackType" />
+        <activity android:name=".CoronaActivity"></activity>
+        <activity android:name=".EditDeleteBlockActivity" />
+        <activity android:name=".BarrackTypeActivity" />
         <activity android:name=".BlockDetailActivity" />
         <activity
             android:name=".PasswordResetActivity"

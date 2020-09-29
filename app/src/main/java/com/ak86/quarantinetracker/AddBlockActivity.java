@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.service.autofill.Dataset;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -30,16 +31,17 @@ import java.util.Date;
 
 public class AddBlockActivity extends AppCompatActivity {
 
-    private DatabaseReference  databaseReference;
-    private EditText fdBlockName, fdBlockDescr;
+    private DatabaseReference usersListDR, barrackTypesListDR;
+    private EditText fdBlockName;
     private NumberPicker numberPicker;
-    private Spinner spinner;
+    private Spinner spinnerUsers, spinnerBarrackType;
     private ProgressBar progressBar;
     private Button button_createNewUser;
     int NUMBER_OF_VALUES = 100; //num of values in the picker
     int PICKER_RANGE = 1;
     String[] displayedValues  = new String[NUMBER_OF_VALUES];
     ArrayList<String> usersList = new ArrayList<>();
+    ArrayList<String> barrackTypesList = new ArrayList<>();
     Boolean okFlag = true;
 
     @Override
@@ -47,7 +49,6 @@ public class AddBlockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_block);
         fdBlockName = (EditText) findViewById(R.id.personNameFd);
-        fdBlockDescr = (EditText) findViewById(R.id.blockDescr);
         numberPicker = findViewById(R.id.numberPicker);
         progressBar = findViewById(R.id.progressBar2);
         button_createNewUser = findViewById(R.id.btnCreateNewBlock);
@@ -63,31 +64,54 @@ public class AddBlockActivity extends AppCompatActivity {
         numberPicker.setMaxValue(displayedValues.length-1);
         numberPicker.setDisplayedValues(displayedValues);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersListDR = FirebaseDatabase.getInstance().getReference();
+        usersListDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot usersSnapshot : snapshot.child("users").getChildren()){
+                for(DataSnapshot usersSnapshot : snapshot.getChildren()){
                     User user = usersSnapshot.getValue(User.class);
                     usersList.add(user.getEmailId());
                     //Log.println(Log.ASSERT, "USERS", user.getUsername());
                     //Map<String, Object> td = (HashMap<String, Object>) usersSnapshot.getValue();
                     //List<Object> values = new ArrayList<>(td.values());
                 }
-                setupSpinner();
+                setupUserSpinner();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        barrackTypesListDR = FirebaseDatabase.getInstance().getReference();
+        barrackTypesListDR.child("barrackType").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot barrackTypesSnapshot : snapshot.getChildren()){
+                    barrackTypesList.add((String)barrackTypesSnapshot.getValue());
+                }
+                setupBarrackTypesSpinner();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
-    private void setupSpinner()
+    private void setupUserSpinner()
     {
-        spinner = (Spinner) findViewById(R.id.spinner);
+        spinnerUsers = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,usersList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
+        spinnerUsers.setAdapter(arrayAdapter);
+    }
+
+    private void setupBarrackTypesSpinner()
+    {
+        spinnerBarrackType = (Spinner) findViewById(R.id.spinnerBarrackType);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,barrackTypesList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBarrackType.setAdapter(arrayAdapter);
     }
 
     @Override
@@ -98,14 +122,16 @@ public class AddBlockActivity extends AppCompatActivity {
 
     private void createNewBlock(){
 
-         String blockName, blockDescr, blockInCharge = null;
+         String blockName, blockDescr =null, blockInCharge = null;
          int blockCapacity;
 
          blockName = fdBlockName.getText().toString().trim();
-         blockDescr = fdBlockDescr.getText().toString().trim();
+         if(spinnerBarrackType !=null && spinnerBarrackType.getSelectedItem() != null){
+             blockDescr = spinnerBarrackType.getSelectedItem().toString().trim();
+         }
          blockCapacity = numberPicker.getValue() + 1;
-         if(spinner != null && spinner.getSelectedItem() != null) {
-            blockInCharge = spinner.getSelectedItem().toString();
+         if(spinnerUsers != null && spinnerUsers.getSelectedItem() != null) {
+            blockInCharge = spinnerUsers.getSelectedItem().toString().trim();
          }
 
          if(TextUtils.isEmpty(blockName) || TextUtils.isEmpty(blockDescr) || TextUtils.isEmpty(blockInCharge)){
@@ -116,7 +142,7 @@ public class AddBlockActivity extends AppCompatActivity {
                  progressBar.setVisibility(View.VISIBLE);
              }
              Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0,Date.from(Instant.EPOCH), Date.from(Instant.EPOCH));
-             databaseReference.child("blocks").child(blockName).setValue(newBlock)
+             usersListDR.child("blocks").child(blockName).setValue(newBlock)
                      .addOnSuccessListener(new OnSuccessListener<Void>(){
                  @Override
                  public void onSuccess(Void aVoid) {

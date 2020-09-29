@@ -95,6 +95,7 @@ public class LandingActivity extends AppCompatActivity {
             addBlock.setVisible(true);
             editBlock.setVisible(true);
             deleteBlock.setVisible(true);
+            addBarrackType.setVisible(true);
         }
         return true;
     }
@@ -113,9 +114,11 @@ public class LandingActivity extends AppCompatActivity {
             case R.id.deleteBlock :
                 Intent deleteIntent = new Intent(getApplicationContext(),EditDeleteBlockActivity.class);
                 startActivity(deleteIntent);
-                startActivity(deleteIntent);
                 return true;
-
+            case R.id.addBarrackType :
+                Intent barrackTypeIntent = new Intent(getApplicationContext(),BarrackTypeActivity.class);
+                startActivity(barrackTypeIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

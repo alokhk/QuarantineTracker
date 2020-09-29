@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -137,6 +139,11 @@ public class BlockDetailActivity extends AppCompatActivity {
                 medDate.setTextColor(Color.parseColor("white"));
                 medDate.setGravity(Gravity.CENTER);
                 headerRow.addView(medDate);
+                TextView coronaStatus = new TextView(getApplicationContext());
+                coronaStatus.setText("Corona\nPositive");
+                coronaStatus.setTextColor(Color.parseColor("white"));
+                coronaStatus.setGravity(Gravity.CENTER);
+                headerRow.addView(coronaStatus);
                 if(currentUser.equals(blockOwner)){
                     TextView actions = new TextView(getApplicationContext());
                     actions.setText("   Actions  ");
@@ -155,7 +162,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                     //Extract the person
                     final Person person = personSnapshot.getValue(Person.class);
                     //create a new row in the table,
-                    TableRow tableRow = new TableRow(getApplicationContext());
+                    final TableRow tableRow = new TableRow(getApplicationContext());
                     //create a textview in the row for say Sl No
                     TextView textViewSlNo = new TextView(getApplicationContext());
                     //set the value of the sl no. here directly, in the subsequent columns, extract from person object
@@ -183,6 +190,37 @@ public class BlockDetailActivity extends AppCompatActivity {
                     textViewMedDate.setText(sdf.format(person.getMedicalDate()));
                     textViewMedDate.setGravity(Gravity.CENTER);
                     tableRow.addView(textViewMedDate);
+                    final CheckBox coronaPositive = new CheckBox(getApplicationContext());
+                    coronaPositive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            android.app.AlertDialog.Builder dialog=new android.app.AlertDialog.Builder(BlockDetailActivity.this);
+                            dialog.setMessage("Are you sure you want to mark "+person.getName()+ " as Corona Positive?");
+                            dialog.setTitle("Alert!");
+                            dialog.setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DatabaseReference coronaPersonDR = FirebaseDatabase.getInstance().getReference();
+                                            coronaPersonDR.child(getIntent().getStringExtra("selectedBlockName")+"People")
+                                                    .child(person.getName()).child("coronaPositive").setValue(true);
+                                            coronaPositive.setEnabled(false);
+                                            manageCoronaPositivePerson(person.getName());
+                                        }
+                                    });
+                            android.app.AlertDialog alertDialog = dialog.create();
+                            alertDialog.show();
+                        }
+                    });
+                    tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+                    if (person.isCoronaPositive()){
+                        coronaPositive.setEnabled(false);
+                        tableRow.setBackgroundColor(Color.argb(100,255 ,55,3));
+                    } else {
+                        tableRow.setBackgroundColor(Color.argb(100,63,124,172));
+
+                    }
+                    tableRow.addView(coronaPositive);
                     if(blockOwner.equals(currentUser)){
                         Button actionButton = new Button(getApplicationContext());
                         actionButton.setText("Delete");
@@ -197,7 +235,6 @@ public class BlockDetailActivity extends AppCompatActivity {
                         tableRow.addView(actionButton);
                     }
                     tableRow.setLayoutParams(lp);
-                    tableRow.setBackgroundColor(Color.argb(100,63,124,172));
                     //finally, add the table row to the table layout.
                     tableLayout.addView(tableRow,lp);
                 }
@@ -223,9 +260,15 @@ public class BlockDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void manageCoronaPositivePerson(String personName){
+        CoronaPositivePerson newPerson = new CoronaPositivePerson(personName);
+        DatabaseReference coronaReference = FirebaseDatabase.getInstance().getReference();
+        coronaReference.child("Corona").child("Positive").child(personName).setValue(newPerson);
+    }
+
     //This method, creates a pop up box, to accept new person name, and start of quarantine date. End Date is calculated.
     //Medical date is entered later.
-    public void showPopUpAndAddPerson(View view){
+    private void showPopUpAndAddPerson(View view){
         //Popup layout is in person_popup, inflate it and build the alert dialog. It has two button Ok & Cancel.
         //Ok writes to the database.
         LayoutInflater li = LayoutInflater.from(BlockDetailActivity.this);
@@ -266,13 +309,14 @@ public class BlockDetailActivity extends AppCompatActivity {
                                             .child(getIntent().getStringExtra("selectedBlockName") + "People");
 
                                     //Inside that node, create a child with the name of the Person and populate it.
-                                    //Attach a success listener. If the write is successful, next we'll check all the
+                                    //Attach a  listener.  next we'll check all the
                                     //dates on which all the people in a block started quarantine.
                                     //2 weeks + the latest date will be the end date of all the people in that blocl
                                     peopleInQuarantineBlock_DR.child(personName).setValue(newPerson);
                                     peopleInQuarantineBlock_DR.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            //update the dates by looking at the latest entrant data. function so as to diff listners
                                             updateDates(snapshot,function);
                                         }
 
@@ -307,7 +351,7 @@ public class BlockDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void updateDates(DataSnapshot snapshot, String callingFunction){
+    private void updateDates(DataSnapshot snapshot, String callingFunction){
         inDates.clear();
         for (DataSnapshot startTimeSnapShot : snapshot.getChildren()) {
             Person personObjectToExtractStartDate = startTimeSnapShot.getValue(Person.class);
@@ -334,7 +378,7 @@ public class BlockDetailActivity extends AppCompatActivity {
 
     }
 
-    public void updateLandingPage(DataSnapshot snapshot, String callingFunction){
+    private void updateLandingPage(DataSnapshot snapshot, String callingFunction){
         for (DataSnapshot blockSnapshot : snapshot.getChildren()) {
             Block block = blockSnapshot.getValue(Block.class);
             assert block != null;
@@ -394,6 +438,24 @@ public class BlockDetailActivity extends AppCompatActivity {
 
                                     }
                                 });
+                                final DatabaseReference blockDR = FirebaseDatabase.getInstance().getReference();
+                                blockDR.child("blocks").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for(DataSnapshot blocks : snapshot.getChildren()){
+                                            Block block = blocks.getValue(Block.class);
+                                            if(block.getBlockName().equals(getIntent().getStringExtra("selectedBlockName"))){
+                                                block.setMedicalDate(medDate);
+                                                blockDR.child("blocks").child(block.getBlockName()).setValue(block);
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                         })
                         .setNegativeButton("Cancel",
@@ -406,7 +468,7 @@ public class BlockDetailActivity extends AppCompatActivity {
             dialog.show();
         }
 
-    public void deletePerson(String personName){
+    private void deletePerson(String personName){
         final String function = "Delete";
         deletePersonDR = FirebaseDatabase.getInstance().getReference()
                 .child(getIntent().getStringExtra("selectedBlockName") + "People");

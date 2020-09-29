@@ -15,7 +15,7 @@
         android:visible="false"/>
     <item
         android:id="@+id/addBarrackType"
-        android:title="Add Barrack Type"
+        android:title="Manage Barrack Types"
         android:visible="false"/>
    
     <item

@@ -7,11 +7,7 @@
         android:title="Add New Block"
         android:visible="false"/>
     <item android:id="@+id/editBlock"
-        android:title="Edit Block"
-        android:visible="false"/>
-    <item
-        android:id="@+id/deleteBlock"
-        android:title="Delete Block"
+        android:title="Manage Blocks"
         android:visible="false"/>
     <item
         android:id="@+id/addBarrackType"

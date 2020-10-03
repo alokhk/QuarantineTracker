@@ -11,13 +11,13 @@
         android:id="@+id/nameConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="20"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:elevation="4dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="20"
         android:background="@android:color/background_light"
+        android:elevation="4dp"
         app:layout_constraintBottom_toTopOf="@+id/personNameFd"
         app:layout_constraintTop_toTopOf="@+id/personNameFd">
 
@@ -41,6 +41,7 @@
             android:layout_marginStart="33dp"
             android:layout_marginTop="10dp"
             android:text="Enter Block Name"
+            android:textColor="#2196F3"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/personNameFd"
@@ -77,6 +78,7 @@
             android:layout_marginBottom="7dp"
             android:layout_marginTop="16dp"
             android:text="Block Type"
+            android:textColor="#2196F3"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/spinner2"
@@ -85,6 +87,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -126,6 +130,7 @@
             android:layout_marginBottom="6dp"
             android:layout_marginTop="16dp"
             android:text="Block Capacity"
+            android:textColor="#2196F3"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/numberPicker"
@@ -162,6 +167,7 @@
             android:layout_marginBottom="6dp"
             android:layout_marginTop="16dp"
             android:text="Block In Charge"
+            android:textColor="#2196F3"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/numberPicker"
@@ -183,10 +189,15 @@
 
         <Button
             android:id="@+id/btnCreateNewBlock"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="200dp"
             android:layout_height="51dp"
             android:background="@android:color/background_light"
+            android:elevation="1dp"
             android:text="CREATE NEW BLOCK"
+            android:textColor="#2196F3"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"

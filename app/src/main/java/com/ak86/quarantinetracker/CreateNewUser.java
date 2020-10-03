@@ -76,8 +76,8 @@ public class CreateNewUser extends AppCompatActivity {
                         return;
                     }
                     if (okFLAG) {
-                        newUser.setUsername(fdUserName.getText().toString());
-                        newUser.setEmailId(fdEmailId.getText().toString());
+                        newUser.setUsername(Validator.encodeForFirebaseKey(fdUserName.getText().toString()));
+                        newUser.setEmailId(Validator.encodeForFirebaseKey(fdEmailId.getText().toString()));
                         mAuth.createUserWithEmailAndPassword(fdEmailId.getText().toString(),fdPassword.getText().toString())
                                 .addOnCompleteListener(CreateNewUser.this, new OnCompleteListener<AuthResult>() {
                                     @Override

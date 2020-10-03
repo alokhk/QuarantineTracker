@@ -65,7 +65,7 @@ public class BlockDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_block_detail);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getIntent().getStringExtra("selectedBlockName"));
+        getSupportActionBar().setTitle(Validator.decodeFromFirebaseKey(getIntent().getStringExtra("selectedBlockName")));
         blockIC =  findViewById(R.id.detailBlockICNameFd);
         blockCapacity = findViewById(R.id.detailBlockCapacityFd);
         blockOccupied = findViewById(R.id.detailBlockOccupiedFd);
@@ -78,7 +78,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                 new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.MATCH_PARENT);
         lp.setMargins(0,5,5,0);
-        //Get a reference to the Selected block name from the previous screen. Eg if the user click on CLH
+        lp.setMarginEnd(5);        //Get a reference to the Selected block name from the previous screen. Eg if the user click on CLH
         listOfBlock_DR = FirebaseDatabase.getInstance().getReference().child("blocks").child(Objects.requireNonNull(getIntent().getStringExtra("selectedBlockName")));
         //Take a snapshot and extract the block IC and the block capcity. Data is not much, because this node holds
         //only the block definition. People in the block are not stored in this node. CLH, CNT etc. ONLY DEFINITION
@@ -86,10 +86,10 @@ public class BlockDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Block block = snapshot.getValue(Block.class);
-                blockOwner = block.getBlockInCharge();
-                blockIC.setText(block.getBlockInCharge());
+                blockOwner = Validator.decodeFromFirebaseKey(block.getBlockInCharge());
+                blockIC.setText(Validator.decodeFromFirebaseKey(block.getBlockInCharge()));
                 blockCapacity.setText(String.valueOf(block.getBlockCapacity()));
-                if(!currentUser.equals(block.getBlockInCharge())){
+                if(!currentUser.equals(Validator.decodeFromFirebaseKey(block.getBlockInCharge()))){
                     addButton.setVisibility(View.GONE);
                     medDateButton.setVisibility(View.GONE);
                 }
@@ -120,7 +120,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                 slno.setGravity(Gravity.CENTER);
                 headerRow.addView(slno);
                 TextView name = new TextView(getApplicationContext());
-                name.setText("  Name  ");
+                name.setText("    Name    ");
                 name.setTextColor(Color.parseColor("white"));
                 name.setGravity(Gravity.CENTER);
                 headerRow.addView(name);
@@ -151,7 +151,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                     actions.setGravity(Gravity.CENTER);
                     headerRow.addView(actions);
                 }
-                headerRow.setBackgroundColor(Color.argb(200,63,124,172));
+                headerRow.setBackgroundColor(Color.argb(200,33,150,243));
                 tableLayout.addView(headerRow);
 /****************************************CREATE TABLE HEADER ENDS******************************************************************/
 
@@ -167,35 +167,40 @@ public class BlockDetailActivity extends AppCompatActivity {
                     TextView textViewSlNo = new TextView(getApplicationContext());
                     //set the value of the sl no. here directly, in the subsequent columns, extract from person object
                     textViewSlNo.setText(String.valueOf(slNoCounter));
+                    textViewSlNo.setTextColor(Color.argb(255,33,150,243));
                     //centre align
                     textViewSlNo.setGravity(Gravity.CENTER);
                     slNoCounter++;
                     //add the textbox to the row.
                     tableRow.addView(textViewSlNo);
                     TextView textViewName = new TextView(getApplicationContext());
-                    textViewName.setText(person.getName());
+                    textViewName.setText(Validator.decodeFromFirebaseKey(person.getName()));
+                    textViewName.setTextColor(Color.argb(255,33,150,243));
                     textViewName.setGravity(Gravity.CENTER);
-                    textViewName.setMaxWidth((Resources.getSystem().getDisplayMetrics().widthPixels)/20);
+                    textViewName.setWidth((Resources.getSystem().getDisplayMetrics().widthPixels)/2);
                     tableRow.addView(textViewName);
                     TextView textViewStartDate = new TextView(getApplicationContext());
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
                     textViewStartDate.setText(sdf.format(person.getStartDate()));
                     textViewStartDate.setGravity(Gravity.CENTER);
+                    textViewStartDate.setTextColor(Color.argb(255,33,150,243));
                     tableRow.addView(textViewStartDate);
                     TextView textViewEndDate = new TextView(getApplicationContext());
                     textViewEndDate.setText(sdf.format(person.getEndDate()));
                     textViewEndDate.setGravity(Gravity.CENTER);
+                    textViewEndDate.setTextColor(Color.argb(255,33,150,243));
                     tableRow.addView(textViewEndDate);
                     TextView textViewMedDate = new TextView(getApplicationContext());
                     textViewMedDate.setText(sdf.format(person.getMedicalDate()));
                     textViewMedDate.setGravity(Gravity.CENTER);
+                    textViewMedDate.setTextColor(Color.argb(255,33,150,243));
                     tableRow.addView(textViewMedDate);
                     final CheckBox coronaPositive = new CheckBox(getApplicationContext());
                     coronaPositive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             android.app.AlertDialog.Builder dialog=new android.app.AlertDialog.Builder(BlockDetailActivity.this);
-                            dialog.setMessage("Are you sure you want to mark "+person.getName()+ " as Corona Positive?");
+                            dialog.setMessage("Are you sure you want to mark "+Validator.decodeFromFirebaseKey(person.getName())+ " as Corona Positive?");
                             dialog.setTitle("Alert!");
                             dialog.setPositiveButton("OK",
                                     new DialogInterface.OnClickListener() {
@@ -217,7 +222,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                         coronaPositive.setEnabled(false);
                         tableRow.setBackgroundColor(Color.argb(100,255 ,55,3));
                     } else {
-                        tableRow.setBackgroundColor(Color.argb(100,63,124,172));
+                        tableRow.setBackgroundColor(Color.argb(100,236,235,232));
 
                     }
                     tableRow.addView(coronaPositive);
@@ -249,7 +254,24 @@ public class BlockDetailActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopUpAndAddPerson(v);
+                DatabaseReference occupancyStateDR =FirebaseDatabase.getInstance().getReference();
+                occupancyStateDR.child("blocks").child(getIntent().getStringExtra("selectedBlockName")).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Block blockstate = snapshot.getValue(Block.class);
+                        if(blockstate.getBlockOccupied()<blockstate.getBlockCapacity()){
+                            showPopUpAndAddPerson(v);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Block is Full!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
         medDateButton.setOnClickListener(new View.OnClickListener() {
@@ -276,6 +298,7 @@ public class BlockDetailActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BlockDetailActivity.this);
         alertDialogBuilder.setView(addPersonView);
         textViewPersonName = addPersonView.findViewById(R.id.personNameFd);
+        textViewPersonName.requestFocus();
         datePickerStartDate = addPersonView.findViewById(R.id.medDtPickerFd);
         final String function = "Add";
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yy");
@@ -302,7 +325,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                                 if (TextUtils.isEmpty(textViewPersonName.getText().toString())) {
                                     Toast.makeText(getApplicationContext(), "Please enter a name!", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    personName = textViewPersonName.getText().toString();
+                                    personName = Validator.encodeForFirebaseKey(textViewPersonName.getText().toString());
                                     Person newPerson = new Person(personName, startDate, startDate, startDate);
                                     //get a reference to the Node BlockName+People
                                     peopleInQuarantineBlock_DR = FirebaseDatabase.getInstance().getReference()

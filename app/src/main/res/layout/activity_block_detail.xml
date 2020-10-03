@@ -11,19 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnAddPerson"
         app:layout_constraintTop_toBottomOf="@+id/btnAddPerson">
 
         <Button
             android:id="@+id/btnAddPerson"
-            android:layout_width="135dp"
-            android:layout_height="40dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
             android:layout_marginEnd="16dp"
-            android:background="#3F7CAC"
+            android:backgroundTint="#FFFFFF"
+            android:elevation="5dp"
             android:lineSpacingExtra="12sp"
             android:text="Add Person"
-            android:textColor="#FFFFFF"
+            android:textColor="#2196F3"
+            android:textSize="10sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,25 +34,34 @@
 
         <Button
             android:id="@+id/btnMedDt"
-            android:layout_width="135dp"
-            android:layout_height="40dp"
-            android:background="#3F7CAC"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#FFFFFF"
+            android:elevation="5dp"
+            android:lineSpacingExtra="12sp"
             android:text="Add Med Dt"
-            android:textColor="#FFFFFF"
+            android:textColor="#2196F3"
+            android:textSize="10sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.942"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintEnd_toEndOf="@+id/btnAddPerson"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/btnAddPerson"
+            app:layout_constraintTop_toTopOf="@+id/btnAddPerson"
+            app:layout_constraintVertical_bias="0.983" />
 
         <TableLayout
             android:id="@+id/blockSummaryTable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="#3F7CAC"
+            android:background="@drawable/rounded_border"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -66,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Block IC"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
 
                 <TextView
@@ -74,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -92,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Capacity"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
 
                 <TextView
@@ -100,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -118,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Occupied"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
 
                 <TextView
@@ -126,7 +138,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#2196F3"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -156,7 +168,7 @@
                     android:layout_height="match_parent"
                     android:divider="@color/cardview_dark_background"
                     android:gravity="center_horizontal"
-                    />
+                    android:stretchColumns="*" />
             </HorizontalScrollView>
 
         </LinearLayout>

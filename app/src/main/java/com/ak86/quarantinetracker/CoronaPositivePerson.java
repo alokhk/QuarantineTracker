@@ -8,7 +8,6 @@ import java.util.Date;
 public class CoronaPositivePerson {
 
     private String name;
-    private Date dayOfTest = null;
     private Date dayOfResult = null;
     private Boolean isNowPositive = false;
     private Boolean isNowNegative = true;
@@ -21,7 +20,6 @@ public class CoronaPositivePerson {
 
     public CoronaPositivePerson(String name){
         this.name = name;
-        this.dayOfTest = new Date();
         this.dayOfResult = new Date();
         this.dateOfNextTest = new Date();
         this.currentLocation = "Please Update";
@@ -39,13 +37,6 @@ public class CoronaPositivePerson {
         this.name = name;
     }
 
-    public Date getDayOfTest() {
-        return dayOfTest;
-    }
-
-    public void setDayOfTest(Date dayOfTest) {
-        this.dayOfTest = dayOfTest;
-    }
 
     public Date getDayOfResult() {
         return dayOfResult;

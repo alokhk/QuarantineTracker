@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,7 +50,7 @@ public class BarrackTypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 writeBarrackTypeDR = FirebaseDatabase.getInstance().getReference();
-                writeBarrackTypeDR.child("barrackType").child(barrackTypeFd.getText().toString()).setValue(barrackTypeFd.getText().toString().trim());
+                writeBarrackTypeDR.child("barrackType").child(Validator.encodeForFirebaseKey(barrackTypeFd.getText().toString())).setValue(Validator.encodeForFirebaseKey(barrackTypeFd.getText().toString().trim()));
             }
         });
     }
@@ -64,18 +66,18 @@ public class BarrackTypeActivity extends AppCompatActivity {
         slno.setTextColor(Color.parseColor("white"));
         slno.setGravity(Gravity.CENTER);
         headerRow.addView(slno);
-        TextView blockName = new TextView(getApplicationContext());
-        blockName.setText(" Barrack Type ");
-        blockName.setTextColor(Color.parseColor("white"));
-        blockName.setGravity(Gravity.CENTER);
-        headerRow.addView(blockName);
+        TextView barrackType = new TextView(getApplicationContext());
+        barrackType.setText(" Barrack Type ");
+        barrackType.setTextColor(Color.parseColor("white"));
+        barrackType.setGravity(Gravity.CENTER);
+        headerRow.addView(barrackType);
         TextView action = new TextView(getApplicationContext());
         action.setText("  Actions  ");
         action.setTextColor(Color.parseColor("white"));
         action.setGravity(Gravity.CENTER);
         headerRow.addView(action);
         headerRow.setLayoutParams(lp);
-        headerRow.setBackgroundColor(Color.argb(200,63,124,172));
+        headerRow.setBackgroundColor(Color.argb(200,33,150,243));
         barrackTypeTable.addView(headerRow,lp);
 
     }
@@ -89,24 +91,28 @@ public class BarrackTypeActivity extends AppCompatActivity {
                         TableLayout.LayoutParams.MATCH_PARENT);
         lp.setMargins(0,5,5,0);
         for(final DataSnapshot snapshot : barrackTypesSnapshot.getChildren()){
-            final String type = (String) snapshot.getValue();
+            final String type =  Validator.decodeFromFirebaseKey(snapshot.getValue().toString());
             TableRow tableRow = new TableRow(getApplicationContext());
             /*********************** SERIAL NUMBER ************************/
             TextView textViewSlNo = new TextView(getApplicationContext());
             textViewSlNo.setText(String.valueOf(slNoCounter));
+            textViewSlNo.setTextColor(Color.argb(255,33,150,243));
             textViewSlNo.setGravity(Gravity.CENTER);
             slNoCounter++;
             tableRow.addView(textViewSlNo);
-            /*********************** BLOCK NAME ************************/
-            TextView textViewBlockName = new TextView(getApplicationContext());
-            textViewBlockName.setText(type);
-            textViewBlockName.setGravity(Gravity.CENTER);
-            tableRow.addView(textViewBlockName);
+            /*********************** BARRACK TYPE ************************/
+            TextView textViewBarrackType = new TextView(getApplicationContext());
+            textViewBarrackType.setText(type);
+            textViewBarrackType.setTextColor(Color.argb(255,33,150,243));
+            textViewBarrackType.setGravity(Gravity.CENTER);
+            tableRow.addView(textViewBarrackType);
             /***********************  ADD A DELETE BUTTON************************/
             Button actionButton = new Button(getApplicationContext());
             actionButton.setText("Delete");
             actionButton.setTextSize(8);
+            actionButton.setElevation(1);
             actionButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            actionButton.setTextColor(Color.argb(255,33,150,243));
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,7 +122,7 @@ public class BarrackTypeActivity extends AppCompatActivity {
             tableRow.addView(actionButton);
             //A long click pops up an edit menu
             tableRow.setLayoutParams(lp);
-            tableRow.setBackgroundColor(Color.argb(100,63,124,172));
+            tableRow.setBackgroundColor(Color.argb(100,236,235,232));
             barrackTypeTable.addView(tableRow,lp);
         }
 

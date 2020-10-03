@@ -70,7 +70,7 @@ public class AddBlockActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot usersSnapshot : snapshot.getChildren()){
                     User user = usersSnapshot.getValue(User.class);
-                    usersList.add(user.getEmailId());
+                    usersList.add(Validator.decodeFromFirebaseKey(user.getEmailId()));
                     //Log.println(Log.ASSERT, "USERS", user.getUsername());
                     //Map<String, Object> td = (HashMap<String, Object>) usersSnapshot.getValue();
                     //List<Object> values = new ArrayList<>(td.values());
@@ -86,7 +86,7 @@ public class AddBlockActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot barrackTypesSnapshot : snapshot.getChildren()){
-                    barrackTypesList.add((String)barrackTypesSnapshot.getValue());
+                    barrackTypesList.add(Validator.decodeFromFirebaseKey(barrackTypesSnapshot.getValue().toString()));
                 }
                 setupBarrackTypesSpinner();
             }
@@ -125,7 +125,7 @@ public class AddBlockActivity extends AppCompatActivity {
          String blockName, blockDescr =null, blockInCharge = null;
          int blockCapacity;
 
-         blockName = fdBlockName.getText().toString().trim();
+         blockName = Validator.encodeForFirebaseKey(fdBlockName.getText().toString().trim());
          if(spinnerBarrackType !=null && spinnerBarrackType.getSelectedItem() != null){
              blockDescr = spinnerBarrackType.getSelectedItem().toString().trim();
          }
@@ -158,7 +158,7 @@ public class AddBlockActivity extends AppCompatActivity {
 
     private void alertDialog(){
         AlertDialog.Builder dialog=new AlertDialog.Builder(this);
-        dialog.setMessage("Successfully created new block : " + fdBlockName.getText().toString());
+        dialog.setMessage("Successfully created new block : " + (fdBlockName.getText().toString()));
         dialog.setTitle("Success");
         dialog.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {

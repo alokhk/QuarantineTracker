@@ -126,7 +126,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             tableRow.addView(textViewSlNo);
             /*********************** BLOCK NAME ************************/
             TextView textViewBlockName = new TextView(getApplicationContext());
-            textViewBlockName.setText(block.getBlockName());
+            textViewBlockName.setText(Validator.decodeFromFirebaseKey(block.getBlockName()));
             textViewBlockName.setGravity(Gravity.CENTER);
             tableRow.addView(textViewBlockName);
             /*********************** BLOCK DESCR ************************/
@@ -196,7 +196,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                 usersList.clear();
                 for(DataSnapshot diffUsers : snapshot.getChildren()){
                     User aUser = diffUsers.getValue(User.class);
-                    usersList.add(aUser.getEmailId());
+                    usersList.add(Validator.encodeForFirebaseKey(aUser.getEmailId()));
                 }
                 setupUserSpinner();
             }
@@ -212,7 +212,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 barrackTypeList.clear();
                 for (DataSnapshot diffBarracktypes : snapshot.getChildren()){
-                    barrackTypeList.add((String)diffBarracktypes.getValue());
+                    barrackTypeList.add(Validator.decodeFromFirebaseKey(diffBarracktypes.getValue().toString()));
                 }
                 setupBarrackTypeSpinner();
             }
@@ -226,7 +226,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
         for(DataSnapshot eachBlockInList : snapshot.getChildren()){
             blockToBeUpdated = eachBlockInList.getValue(Block.class);
                 if(blockToBeUpdated.getBlockName().equals(blockName)){
-                    newBlockName.setText(blockToBeUpdated.getBlockName());
+                    newBlockName.setText(Validator.decodeFromFirebaseKey(blockToBeUpdated.getBlockName()));
                     newBlockDescr.setSelection(barrackTypeList.indexOf(blockToBeUpdated.getBlockDescr()));
                     newCapacity.setValue(blockToBeUpdated.getBlockCapacity()-1);
                     newBlockIC.setSelection(usersList.indexOf(blockToBeUpdated.getBlockInCharge()));
@@ -248,7 +248,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                                     updateBlockDR.child(blockName.concat("People")).removeValue();
                                 }
                                 Block updatedBlock = new Block();
-                                updatedBlock.setBlockName(newBlockName.getText().toString());
+                                updatedBlock.setBlockName(Validator.encodeForFirebaseKey(newBlockName.getText().toString()));
                                 updatedBlock.setBlockDescr(newBlockDescr.getSelectedItem().toString());
                                 updatedBlock.setBlockCapacity(newCapacity.getValue()+1);
                                 updatedBlock.setBlockInCharge(newBlockIC.getSelectedItem().toString());

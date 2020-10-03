@@ -9,9 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CoronaActivity"></activity>
-        <activity android:name=".EditDeleteBlockActivity" />
-        <activity android:name=".BarrackTypeActivity" />
+        <activity android:name=".OccupancyStateReport"></activity>
+        <activity android:name=".CoronaActivity" />
+        <activity
+            android:name=".EditDeleteBlockActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BarrackTypeActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".BlockDetailActivity" />
         <activity
             android:name=".PasswordResetActivity"
@@ -24,7 +29,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".LandingActivity"
-            android:label="@string/title_activity_block" />
+            android:label="@string/title_activity_block"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait">

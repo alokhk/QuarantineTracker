@@ -36,15 +36,18 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
     @Override
     public void onBindViewHolder(@NonNull BlockViewHolder holder, int position) {
         Block block = blockList.get(position);
-        holder.blockName.setText(block.getBlockName());
+        holder.blockName.setText(Validator.decodeFromFirebaseKey(block.getBlockName()));
         holder.blockDescr.setText(block.getBlockDescr());
-        holder.blockInCharge.setText(block.getBlockInCharge());
+        holder.blockInCharge.setText(Validator.decodeFromFirebaseKey(block.getBlockInCharge()));
         holder.blockCapacity.setText(String.valueOf(block.getBlockCapacity()));
         holder.blockOccupied.setText(String.valueOf(block.getBlockOccupied()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
-        holder.blockEndDate.setText(sdf.format(block.getQuarantineEndDate()));
-        holder.blockMedDate.setText(sdf.format(block.getMedicalDate()));
-        if(block.getBlockDescr().equals("Isolation") || block.getBlockDescr().equals("Holding") ){
+        if(block.getMedicalDate() !=null && block.getQuarantineEndDate() != null){
+            holder.blockEndDate.setText(sdf.format(block.getQuarantineEndDate()));
+            holder.blockMedDate.setText(sdf.format(block.getMedicalDate()));
+        }
+
+        if(block.getBlockDescr().equals("Isolation") || block.getBlockDescr().equals("Holding") || block.getBlockOccupied()==0 ){
             holder.blockEndDate.setVisibility(View.GONE);
             holder.blockMedDate.setVisibility(View.GONE);
             holder.tvQE.setVisibility(View.GONE);
@@ -77,9 +80,9 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Log.println(Log.ASSERT,"CardClick", blockName.getText().toString());
+                    Log.println(Log.ASSERT,"CardClick", Validator.encodeForFirebaseKey(blockName.getText().toString()));
                     Intent intent = new Intent(context, BlockDetailActivity.class);
-                    intent.putExtra("selectedBlockName",blockName.getText().toString());
+                    intent.putExtra("selectedBlockName",Validator.encodeForFirebaseKey(blockName.getText().toString()));
                     context.startActivity(intent);
                 }
             });

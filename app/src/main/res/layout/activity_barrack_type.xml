@@ -26,12 +26,15 @@
 
             <Button
                 android:id="@+id/btnAddBarrackType"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="90dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="11dp"
-                android:background="#3F7CAC"
+                android:background="#FFFFFF"
+                android:elevation="1dp"
                 android:text="Add"
-                android:textColor="#FFFFFF"
+                android:textColor="#2196F3"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editTextBarrackType" />
@@ -42,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
                 android:ems="10"
-                android:text="Name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -55,7 +57,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Barrack Type"
                 android:textAlignment="textStart"
-                android:textColor="#3F7CAC"
+                android:textColor="#2196F3"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/editTextBarrackType"

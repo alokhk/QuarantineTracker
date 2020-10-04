@@ -2,14 +2,28 @@ package com.ak86.quarantinetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,11 +31,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Objects;
 
 public class OccupancyStateReport extends AppCompatActivity {
 
     private TableLayout reportTable;
+    private File imagePath;
     private int slNoCounter = 1;
     final TableLayout.LayoutParams lp =
             new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
@@ -125,7 +146,7 @@ public class OccupancyStateReport extends AppCompatActivity {
 
         TextView startDate = new TextView(getApplicationContext());
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
-        startDate.setText(sdf.format(block.getQuarantineEndDate()));
+        startDate.setText(sdf.format(block.getQuarantineStartDate()));
         startDate.setTextColor(Color.argb(255,33,150,243));
         startDate.setGravity(Gravity.CENTER);
         tableRow.addView(startDate);
@@ -148,4 +169,6 @@ public class OccupancyStateReport extends AppCompatActivity {
         tableRow.setLayoutParams(lp);
         reportTable.addView(tableRow, lp);
     }
+
+
 }

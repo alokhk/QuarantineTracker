@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -66,6 +69,8 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
     public class BlockViewHolder extends RecyclerView.ViewHolder{
 
         TextView blockName, blockDescr, blockInCharge, blockCapacity, blockOccupied, blockEndDate, blockMedDate, tvQE, tvMD;
+
+
         public BlockViewHolder(View itemView){
             super(itemView);
             blockName = itemView.findViewById(R.id.personNameFd);

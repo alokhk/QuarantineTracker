@@ -141,7 +141,7 @@ public class AddBlockActivity extends AppCompatActivity {
              if (progressBar != null) {
                  progressBar.setVisibility(View.VISIBLE);
              }
-             Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0,Date.from(Instant.EPOCH), Date.from(Instant.EPOCH));
+             Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0,Date.from(Instant.EPOCH), Date.from(Instant.EPOCH), Date.from(Instant.EPOCH));
              usersListDR.child("blocks").child(blockName).setValue(newBlock)
                      .addOnSuccessListener(new OnSuccessListener<Void>(){
                  @Override

@@ -9,18 +9,29 @@ public class Block {
     private int blockCapacity;
     private String blockInCharge;
     private int blockOccupied;
+
+    public void setQuarantineStartDate(Date quarantineStartDate) {
+        this.quarantineStartDate = quarantineStartDate;
+    }
+
+    public Date getQuarantineStartDate(){
+        return this.quarantineStartDate;
+    }
+
+    private Date quarantineStartDate;
     private Date quarantineEndDate;
     private Date medicalDate;
 
 
     public Block(){}
 
-    public Block(String blockName, String blockDescr, String blockInCharge, int blockCapacity, int blockOccupied, Date quarantineEndDate, Date medicalDate){
+    public Block(String blockName, String blockDescr, String blockInCharge, int blockCapacity, int blockOccupied, Date quarantineStartDate, Date quarantineEndDate, Date medicalDate){
         this.blockName = blockName;
         this.blockDescr = blockDescr;
         this.blockCapacity = blockCapacity;
         this.blockInCharge = blockInCharge;
         this.blockOccupied = blockOccupied;
+        this.quarantineStartDate = quarantineStartDate;
         this.quarantineEndDate = quarantineEndDate;
         this.medicalDate = medicalDate;
     }

@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,18 +22,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class BarrackTypeActivity extends AppCompatActivity {
 
-    EditText barrackTypeFd;
-    Button btnAdd;
-    DatabaseReference writeBarrackTypeDR, listBarrackTypeDR;
-    TableLayout barrackTypeTable;
+    private EditText barrackTypeFd;
+    private Button btnAdd;
+    private DatabaseReference writeBarrackTypeDR, listBarrackTypeDR;
+    private TableLayout barrackTypeTable;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barrack_type);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Manage Barrack Types");
         barrackTypeFd  = findViewById(R.id.editTextBarrackType);
         btnAdd  = findViewById(R.id.btnAddBarrackType);
+        progressBar = findViewById(R.id.progressBarBarrackType);
         barrackTypeTable = findViewById(R.id.barrackTypeTable);
         listBarrackTypeDR = FirebaseDatabase.getInstance().getReference();
         listBarrackTypeDR.child("barrackType").addValueEventListener(new ValueEventListener() {
@@ -51,6 +58,7 @@ public class BarrackTypeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 writeBarrackTypeDR = FirebaseDatabase.getInstance().getReference();
                 writeBarrackTypeDR.child("barrackType").child(Validator.encodeForFirebaseKey(barrackTypeFd.getText().toString())).setValue(Validator.encodeForFirebaseKey(barrackTypeFd.getText().toString().trim()));
+                barrackTypeFd.setText("");
             }
         });
     }
@@ -123,8 +131,15 @@ public class BarrackTypeActivity extends AppCompatActivity {
             //A long click pops up an edit menu
             tableRow.setLayoutParams(lp);
             tableRow.setBackgroundColor(Color.argb(100,236,235,232));
+            progressBar.setVisibility(View.GONE);
             barrackTypeTable.addView(tableRow,lp);
         }
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

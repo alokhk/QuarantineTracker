@@ -16,17 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -173,13 +169,39 @@ public class LandingActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.side_menu,menu);
-        MenuItem addBlock = menu.findItem(R.id.addNewBlock);
-        MenuItem editBlock = menu.findItem(R.id.editBlock);
+        MenuItem manageBlock = menu.findItem(R.id.manageBlocks);
         MenuItem addBarrackType = menu.findItem(R.id.addBarrackType);
-        if(Objects.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(), "admin@39gtc.gr")){
-            addBlock.setVisible(true);
-            editBlock.setVisible(true);
+        MenuItem manageUsers = menu.findItem(R.id.manageUsers);
+        MenuItem logout = menu.findItem(R.id.itemLogout);
+       /* DatabaseReference userReference = FirebaseDatabase.getInstance().getReference();
+        userReference.child("users")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot users : snapshot.getChildren()){
+                            User user = users.getValue(User.class);
+                            assert user != null;
+                            if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                                if(user.getUserLevel() == 2){
+                                    manageBlock.setVisible(true);
+                                    addBarrackType.setVisible(true);
+                                    manageUsers.setVisible(true);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+*/
+        /*if(Objects.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(), "admin@39gtc.gr")){*/
+        Log.println(Log.ASSERT, "Alok",String.valueOf(getIntent().getIntExtra("currentUserAuthLevel",0)));
+        if(getIntent().getIntExtra("currentUserAuthLevel",0) > 2){
+            manageBlock.setVisible(true);
             addBarrackType.setVisible(true);
+            manageUsers.setVisible(true);
         }
         return true;
     }
@@ -187,21 +209,32 @@ public class LandingActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addNewBlock :
-                Intent intent = new Intent(getApplicationContext(), AddBlockActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.editBlock :
-                Intent editIntent = new Intent(getApplicationContext(), EditDeleteBlockActivity.class);
-                startActivity(editIntent);
+            case R.id.manageBlocks :
+                Intent manageIntent = new Intent(getApplicationContext(), ManageBlockActivity.class);
+                startActivity(manageIntent);
                 return true;
             case R.id.addBarrackType :
                 Intent barrackTypeIntent = new Intent(getApplicationContext(),BarrackTypeActivity.class);
                 startActivity(barrackTypeIntent);
                 return true;
+            case R.id.manageUsers :
+                Intent manageUsersIntent = new Intent(getApplicationContext(), ManageUserActivity.class);
+                startActivity(manageUsersIntent);
+                return true;
+            case R.id.itemLogout :
+                mAuth.signOut();
+                finish();
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     public class MyValueFormatter extends ValueFormatter {

@@ -27,10 +27,12 @@
             android:textColor="#2196F3"
             android:textSize="10sp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.166" />
+            app:layout_constraintVertical_bias="0.166"
+            tools:visibility="visible" />
 
         <Button
             android:id="@+id/btnMedDt"
@@ -45,12 +47,14 @@
             android:textColor="#2196F3"
             android:textSize="10sp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/btnAddPerson"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/btnAddPerson"
             app:layout_constraintTop_toTopOf="@+id/btnAddPerson"
-            app:layout_constraintVertical_bias="0.983" />
+            app:layout_constraintVertical_bias="0.983"
+            tools:visibility="visible" />
 
         <TableLayout
             android:id="@+id/blockSummaryTable"
@@ -145,6 +149,14 @@
         </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBarBlockDetail"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        tools:visibility="visible" />
 
     <ScrollView
         android:layout_width="match_parent"

@@ -1,22 +1,25 @@
 package com.ak86.quarantinetracker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,8 +29,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 /*********************************This is an Admin function. Once blocks are created, they can be deleted or edited*******************************************************************************************************/
-public class EditDeleteBlockActivity extends AppCompatActivity {
+public class ManageBlockActivity extends AppCompatActivity {
 
     private TableLayout tableBlocksList;
     private DatabaseReference blockListReference;
@@ -35,6 +42,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
     private ArrayList<String> barrackTypeList = new ArrayList<>();
     private Spinner newBlockIC, newBlockDescr;
     private View editBlock;
+    private ProgressBar progressBar;
     private int NUMBER_OF_VALUES = 100; //num of values in the picker
     private int PICKER_RANGE = 1;
     String[] displayedValues  = new String[NUMBER_OF_VALUES];
@@ -43,9 +51,11 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_delete_block);
+        setContentView(R.layout.activity_manage_block);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Manage Blocks");
         tableBlocksList = findViewById(R.id.tableBlocksList);
+        progressBar = findViewById(R.id.progressBarManageBlock);
         blockListReference = FirebaseDatabase.getInstance().getReference().child("blocks");
         blockListReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -172,13 +182,15 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
             );
             tableRow.setLayoutParams(lp);
             tableRow.setBackgroundColor(Color.argb(100,63,124,172));
+            progressBar.setVisibility(View.GONE);
             tableBlocksList.addView(tableRow,lp);
         }
+        Toast.makeText(getApplicationContext(),"Long press table rows to update data",Toast.LENGTH_LONG).show();
     }
 /****************long press popup to edit*************************************************************************************************/
     private void popupAndEditBlock(final String blockName, DataSnapshot snapshot){
         /*********************populate with existing data. read from cloud and fill up********************************************************************************************/
-        LayoutInflater li = LayoutInflater.from(EditDeleteBlockActivity.this);
+        LayoutInflater li = LayoutInflater.from(ManageBlockActivity.this);
         editBlock = li.inflate(R.layout.edit_block_popup, null);
         final TextView newBlockName = editBlock.findViewById(R.id.editTextBlockName);
         final NumberPicker newCapacity = editBlock.findViewById(R.id.numberPickerNewCapacity);
@@ -196,7 +208,7 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                 usersList.clear();
                 for(DataSnapshot diffUsers : snapshot.getChildren()){
                     User aUser = diffUsers.getValue(User.class);
-                    usersList.add(Validator.encodeForFirebaseKey(aUser.getEmailId()));
+                    usersList.add(Validator.decodeFromFirebaseKey(aUser.getEmailId()));
                 }
                 setupUserSpinner();
             }
@@ -232,33 +244,40 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
                     newBlockIC.setSelection(usersList.indexOf(blockToBeUpdated.getBlockInCharge()));
             }
         }
+
         /******When user changes the data existing, then first look at the changes. Then move the people data to ***********************************************************************************************************/
         /******a corresponding node. mov record function, then create a new block with new data, copy details from existing***********************************************************************************************************/
         /******lastly delete the old copies***********************************************************************************************************/
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditDeleteBlockActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ManageBlockActivity.this);
         builder.setView(editBlock);
         builder.setCancelable(false)
                 .setPositiveButton("Update",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                final DatabaseReference updateBlockDR = FirebaseDatabase.getInstance().getReference();
-                                if(!blockName.equals(newBlockName.getText().toString())){
-                                    moveRecord(updateBlockDR.child(blockName.concat("People")),updateBlockDR.child(newBlockName.getText().toString().concat("People")));
-                                    updateBlockDR.child(blockName.concat("People")).removeValue();
+                                if(TextUtils.isEmpty(newBlockDescr.getSelectedItem().toString()) || TextUtils.isEmpty(newBlockIC.getSelectedItem().toString())){
+                                    Toast.makeText(getApplicationContext(), "Please wait till list of barrack types and users load", Toast.LENGTH_LONG).show();
+                                } else {
+                                    final DatabaseReference updateBlockDR = FirebaseDatabase.getInstance().getReference();
+                                    if(!blockName.equals(newBlockName.getText().toString())){
+                                        moveRecord(updateBlockDR.child(blockName.concat("People")),updateBlockDR.child(newBlockName.getText().toString().concat("People")));
+                                        updateBlockDR.child(blockName.concat("People")).removeValue();
+                                    }
+                                    Block updatedBlock = new Block();
+                                    updatedBlock.setBlockName(Validator.encodeForFirebaseKey(newBlockName.getText().toString()));
+                                    updatedBlock.setBlockDescr(newBlockDescr.getSelectedItem().toString());
+                                    updatedBlock.setBlockCapacity(newCapacity.getValue()+1);
+                                    updatedBlock.setBlockInCharge(newBlockIC.getSelectedItem().toString());
+                                    updatedBlock.setBlockOccupied(blockToBeUpdated.getBlockOccupied());
+                                    updatedBlock.setQuarantineStartDate(blockToBeUpdated.getQuarantineStartDate());
+                                    updatedBlock.setMedicalDate(blockToBeUpdated.getMedicalDate());
+                                    updatedBlock.setQuarantineEndDate(blockToBeUpdated.getQuarantineEndDate());
+                                    updateBlockDR.child("blocks").child(updatedBlock.getBlockName()).setValue(updatedBlock);
+                                    if(!blockName.equals(newBlockName.getText().toString())) {
+                                        updateBlockDR.child("blocks").child(blockName).removeValue();
+                                    }
                                 }
-                                Block updatedBlock = new Block();
-                                updatedBlock.setBlockName(Validator.encodeForFirebaseKey(newBlockName.getText().toString()));
-                                updatedBlock.setBlockDescr(newBlockDescr.getSelectedItem().toString());
-                                updatedBlock.setBlockCapacity(newCapacity.getValue()+1);
-                                updatedBlock.setBlockInCharge(newBlockIC.getSelectedItem().toString());
-                                updatedBlock.setBlockOccupied(blockToBeUpdated.getBlockOccupied());
-                                updatedBlock.setMedicalDate(blockToBeUpdated.getMedicalDate());
-                                updatedBlock.setQuarantineEndDate(blockToBeUpdated.getQuarantineEndDate());
-                                updateBlockDR.child("blocks").child(updatedBlock.getBlockName()).setValue(updatedBlock);
-                                if(!blockName.equals(newBlockName.getText().toString())) {
-                                    updateBlockDR.child("blocks").child(blockName).removeValue();
-                                }
+
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -358,5 +377,23 @@ public class EditDeleteBlockActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp(){
         finish();
         return true;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.block_menu,menu);
+        MenuItem addBlock = menu.findItem(R.id.addNewBlock);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.addNewBlock :
+                Intent intent = new Intent(getApplicationContext(), AddBlockActivity.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

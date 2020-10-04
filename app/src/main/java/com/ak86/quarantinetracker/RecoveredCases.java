@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,14 +34,15 @@ public class RecoveredCases extends Fragment {
     private TableLayout coronaNegativeTable;
     private DatabaseReference coronaNegativeDR;
     private int slNoCounter;
+    private ProgressBar progressBar;
     private TableLayout.LayoutParams lp;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
         View view  =  inflater.inflate(R.layout.fragment_active_cases, container, false);
-
         coronaNegativeTable = view.findViewById(R.id.coronaActiveTable);
+        progressBar = view.findViewById(R.id.progressBarActiveCases);
         lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.MATCH_PARENT);
         lp.setMargins(0,5,5,0);
@@ -105,6 +107,7 @@ public class RecoveredCases extends Fragment {
                 tableRow.setElevation(4);
                 tableRow.setBackgroundColor(Color.argb(100,236,235,232));
                 tableRow.setLayoutParams(lp);
+                progressBar.setVisibility(View.GONE);
                 coronaNegativeTable.addView(tableRow, lp);
             }
 

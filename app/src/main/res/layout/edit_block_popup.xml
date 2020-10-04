@@ -30,12 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp" />
 
-    <ProgressBar
-        android:id="@+id/progressBarEditBlock"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <NumberPicker
         android:id="@+id/numberPickerNewCapacity"
         android:layout_width="wrap_content"

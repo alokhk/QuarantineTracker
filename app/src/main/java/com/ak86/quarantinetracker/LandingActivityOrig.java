@@ -1,3 +1,4 @@
+/*
 package com.ak86.quarantinetracker;
 
 import android.content.Intent;
@@ -167,7 +168,7 @@ public class LandingActivityOrig extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.editBlock :
-                Intent editIntent = new Intent(getApplicationContext(), EditDeleteBlockActivity.class);
+                Intent editIntent = new Intent(getApplicationContext(), ManageBlockActivity.class);
                 startActivity(editIntent);
                 return true;
 
@@ -179,4 +180,4 @@ public class LandingActivityOrig extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-}
+}*/

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -59,7 +60,9 @@ public class BlockDetailActivity extends AppCompatActivity {
     private TableLayout tableLayout;
     private List<Date> inDates = new ArrayList<>();
     private int blockOccupiedForLandingPage;
-    private Date endDateForLandingPage, medDateForLandingPage;
+    private Date endDateForLandingPage, medDateForLandingPage, earliestDateForLandingPage;
+    private ProgressBar progressBarBlockDetail;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +74,10 @@ public class BlockDetailActivity extends AppCompatActivity {
         blockOccupied = findViewById(R.id.detailBlockOccupiedFd);
         addButton = findViewById(R.id.btnAddPerson);
         medDateButton = findViewById(R.id.btnMedDt);
+        progressBarBlockDetail = findViewById(R.id.progressBarBlockDetail);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getEmail();
+
         tableLayout = findViewById(R.id.personDetailTable);
         final TableLayout.LayoutParams lp =
                 new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
@@ -90,8 +95,8 @@ public class BlockDetailActivity extends AppCompatActivity {
                 blockIC.setText(Validator.decodeFromFirebaseKey(block.getBlockInCharge()));
                 blockCapacity.setText(String.valueOf(block.getBlockCapacity()));
                 if(!currentUser.equals(Validator.decodeFromFirebaseKey(block.getBlockInCharge()))){
-                    addButton.setVisibility(View.GONE);
-                    medDateButton.setVisibility(View.GONE);
+                    addButton.setVisibility(View.INVISIBLE);
+                    medDateButton.setVisibility(View.INVISIBLE);
                 }
             }
             @Override
@@ -99,6 +104,25 @@ public class BlockDetailActivity extends AppCompatActivity {
 
             }
         });
+        DatabaseReference userAuthDR = FirebaseDatabase.getInstance().getReference();
+        userAuthDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot users : snapshot.getChildren()){
+                    user = users.getValue(User.class);
+                    if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                        if(user.getUserLevel() > 2){
+                                addButton.setVisibility(View.VISIBLE);
+                                medDateButton.setVisibility(View.VISIBLE); }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         //Here we are listing the people in a particular block. Ex CLHPeople, CNT Barrack People etc
         //This a reference to the node of all the peoples in a block
         peopleInQuarantineBlock_DR = FirebaseDatabase.getInstance().getReference()
@@ -108,6 +132,9 @@ public class BlockDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull final DataSnapshot snapshot) {
                 //Set the occupation status of the Block
+                if(progressBarBlockDetail!=null){
+                    progressBarBlockDetail.setVisibility(View.GONE);
+                }
                 blockOccupied.setText(String.valueOf(snapshot.getChildrenCount()));
                 blockOccupiedForLandingPage = (int)snapshot.getChildrenCount();
 /******************************************CREATE TABLE HEADER******************************************************************/
@@ -151,6 +178,27 @@ public class BlockDetailActivity extends AppCompatActivity {
                     actions.setGravity(Gravity.CENTER);
                     headerRow.addView(actions);
                 }
+                userAuthDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot users : snapshot.getChildren()){
+                            user = users.getValue(User.class);
+                            if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                                if(user.getUserLevel() > 2 && !blockOwner.equals(currentUser)){
+                                    TextView actions = new TextView(getApplicationContext());
+                                    actions.setText("   Actions  ");
+                                    actions.setTextColor(Color.parseColor("white"));
+                                    actions.setGravity(Gravity.CENTER);
+                                    headerRow.addView(actions);
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 headerRow.setBackgroundColor(Color.argb(200,33,150,243));
                 tableLayout.addView(headerRow);
 /****************************************CREATE TABLE HEADER ENDS******************************************************************/
@@ -209,6 +257,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                                             DatabaseReference coronaPersonDR = FirebaseDatabase.getInstance().getReference();
                                             coronaPersonDR.child(getIntent().getStringExtra("selectedBlockName")+"People")
                                                     .child(person.getName()).child("coronaPositive").setValue(true);
+                                            //if user marks person positive, cant disable
                                             coronaPositive.setEnabled(false);
                                             manageCoronaPositivePerson(person.getName());
                                         }
@@ -219,14 +268,25 @@ public class BlockDetailActivity extends AppCompatActivity {
                     });
                     tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
                     if (person.isCoronaPositive()){
+                        //disable checkbox if positive
                         coronaPositive.setEnabled(false);
                         tableRow.setBackgroundColor(Color.argb(100,255 ,55,3));
                     } else {
                         tableRow.setBackgroundColor(Color.argb(100,236,235,232));
 
                     }
+                    //by default set disabled, coz we enable them only if owwner is logged in.
+                    coronaPositive.setEnabled(false);
                     tableRow.addView(coronaPositive);
-                    if(blockOwner.equals(currentUser)){
+                    if(!blockOwner.equals(currentUser)) {
+                        //if someone else is seeing, then cant edit
+                            coronaPositive.setEnabled(false);
+                    }
+
+                        if(blockOwner.equals(currentUser)){
+                            if(!person.isCoronaPositive()){
+                                coronaPositive.setEnabled(true);
+                            }
                         Button actionButton = new Button(getApplicationContext());
                         actionButton.setText("Delete");
                         actionButton.setTextSize(8);
@@ -239,6 +299,37 @@ public class BlockDetailActivity extends AppCompatActivity {
                         });
                         tableRow.addView(actionButton);
                     }
+                    userAuthDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for(DataSnapshot users : snapshot.getChildren()){
+                                user = users.getValue(User.class);
+                                if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                                    if(user.getUserLevel() > 2 && !blockOwner.equals(currentUser)){
+                                        if(!person.isCoronaPositive()){
+                                            coronaPositive.setEnabled(true);
+                                        }
+                                        Button actionButton = new Button(getApplicationContext());
+                                        actionButton.setText("Delete");
+                                        actionButton.setTextSize(8);
+                                        actionButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                        actionButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                deletePerson(person.getName());
+                                            }
+                                        });
+                                        tableRow.addView(actionButton);
+                                    }
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                     tableRow.setLayoutParams(lp);
                     //finally, add the table row to the table layout.
                     tableLayout.addView(tableRow,lp);
@@ -280,6 +371,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                 showPopUpAndAddDate(v);
             }
         });
+
     }
 
     private void manageCoronaPositivePerson(String personName){
@@ -381,6 +473,7 @@ public class BlockDetailActivity extends AppCompatActivity {
             inDates.add(personObjectToExtractStartDate.getStartDate());
         }
         Date latestDate = Collections.max(inDates);
+        earliestDateForLandingPage = Collections.min(inDates);
         LocalDate startDate = Instant.ofEpochMilli(latestDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate endDate = startDate.plusWeeks(2);
         LocalDate medDate = startDate.plusWeeks(2).plusDays(1);
@@ -410,6 +503,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                 block.setBlockOccupied(blockOccupiedForLandingPage);
                 block.setQuarantineEndDate(endDateForLandingPage);
                 block.setMedicalDate(medDateForLandingPage);
+                block.setQuarantineStartDate(earliestDateForLandingPage);
                 if(callingFunction.equals("Add")){
                     listOfBlock_DR.child(block.getBlockName()).setValue(block);
                 } else if(callingFunction.equals("Delete")){

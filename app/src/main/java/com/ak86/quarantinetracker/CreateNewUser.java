@@ -78,6 +78,7 @@ public class CreateNewUser extends AppCompatActivity {
                     if (okFLAG) {
                         newUser.setUsername(Validator.encodeForFirebaseKey(fdUserName.getText().toString()));
                         newUser.setEmailId(Validator.encodeForFirebaseKey(fdEmailId.getText().toString()));
+                        newUser.setUserLevel(0);
                         mAuth.createUserWithEmailAndPassword(fdEmailId.getText().toString(),fdPassword.getText().toString())
                                 .addOnCompleteListener(CreateNewUser.this, new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -85,7 +86,7 @@ public class CreateNewUser extends AppCompatActivity {
                                         if(task.isSuccessful()){
                                             progressBar.setVisibility(View.GONE);
                                             alertDialog();
-                                            databaseReference.child("users").child(mAuth.getCurrentUser().getUid()).setValue(newUser);
+                                            databaseReference.child("users").child(fdUserName.getText().toString()).setValue(newUser);
                                         }else {
                                             Toast.makeText(CreateNewUser.this,"Failed to create new account.",Toast.LENGTH_LONG).show();
                                             progressBar.setVisibility(View.GONE);

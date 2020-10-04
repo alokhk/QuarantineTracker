@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/addNewBlock"
-        android:icon="@android:drawable/ic_input_add"
-        android:title="Add New Block"
+    <item android:id="@+id/manageUsers"
+        android:title="Manage Users"
         android:visible="false"/>
-    <item android:id="@+id/editBlock"
+
+    <item android:id="@+id/manageBlocks"
         android:title="Manage Blocks"
         android:visible="false"/>
     <item

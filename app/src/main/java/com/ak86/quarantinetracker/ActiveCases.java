@@ -4,15 +4,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,15 +41,18 @@ public class ActiveCases extends Fragment {
     private TableLayout coronaActiveTable;
     private DatabaseReference coronaPositiveDR;
     private int slNoCounter;
+    private FirebaseAuth mAuth;
     private TableLayout.LayoutParams lp;
     private View updatePerson, negativeDatePopup;
+    private ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
         View view  =  inflater.inflate(R.layout.fragment_active_cases, container, false);
-
+        mAuth = FirebaseAuth.getInstance();
         coronaActiveTable = view.findViewById(R.id.coronaActiveTable);
+        progressBar = view.findViewById(R.id.progressBarActiveCases);
         lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.MATCH_PARENT);
         lp.setMargins(0,5,5,0);
@@ -122,35 +130,53 @@ public class ActiveCases extends Fragment {
                 dateOfNegativeTestTv.setText(sdf.format(coronaPositivePerson.getDateOfNegativeResult()));
                 dateOfNegativeTestTv.setGravity(Gravity.CENTER);
                 tableRow.addView(dateOfNegativeTestTv);*/
-
-                MaterialButton btnNegativePerson = new MaterialButton(getActivity());
-                btnNegativePerson.setText("Mark Negative");
-                btnNegativePerson.setTextSize(8);
-                btnNegativePerson.setElevation(5);
-                btnNegativePerson.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                btnNegativePerson.setCornerRadius(8);
-                btnNegativePerson.setTextColor(Color.argb(255,33,150,243));
-                btnNegativePerson.setBackgroundColor(Color.parseColor("white"));
-                btnNegativePerson.setOnClickListener(new View.OnClickListener() {
+                DatabaseReference userAuthDR = FirebaseDatabase.getInstance().getReference();
+                userAuthDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(View v) {
-                        popUpForNegativeTestDate(coronaPositivePerson);
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot users : snapshot.getChildren()){
+                            User user = users.getValue(User.class);
+                            if(mAuth.getCurrentUser().getEmail().equals(Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                                if(user.getUserLevel() > 2){
+                                    MaterialButton btnNegativePerson = new MaterialButton(getActivity());
+                                    btnNegativePerson.setText("Mark Negative");
+                                    btnNegativePerson.setTextSize(8);
+                                    btnNegativePerson.setElevation(5);
+                                    btnNegativePerson.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                                    btnNegativePerson.setCornerRadius(8);
+                                    btnNegativePerson.setTextColor(Color.argb(255,33,150,243));
+                                    btnNegativePerson.setBackgroundColor(Color.parseColor("white"));
+                                    Toast.makeText(getActivity(),"Long press table rows to update data",Toast.LENGTH_LONG).show();
+                                    btnNegativePerson.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            popUpForNegativeTestDate(coronaPositivePerson);
+                                        }
+                                    });
+                                    tableRow.addView(btnNegativePerson);
+
+                                    tableRow.setOnLongClickListener(new View.OnLongClickListener() {
+                                        @Override
+                                        public boolean onLongClick(View v) {
+                                            popUpAndUpdateCoronaDetails(coronaPositivePerson);
+                                            return true;
+                                        }
+                                    });
+
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
-                tableRow.addView(btnNegativePerson);
-
-                tableRow.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        popUpAndUpdateCoronaDetails(coronaPositivePerson);
-                        return true;
-                    }
-                });
-
                 tableRow.setMinimumHeight(50);
                 tableRow.setElevation(4);
                 tableRow.setBackgroundColor(Color.argb(100,236,235,232));
                 tableRow.setLayoutParams(lp);
+                progressBar.setVisibility(View.GONE);
                 coronaActiveTable.addView(tableRow, lp);
             }
 
@@ -199,11 +225,29 @@ public class ActiveCases extends Fragment {
             dtOfNegativeResult.setTextColor(Color.parseColor("white"));
             dtOfNegativeResult.setGravity(Gravity.CENTER);
             headerRow.addView(dtOfNegativeResult);*/
-            TextView action = new TextView(getActivity());
-            action.setText("  Actions  ");
-            action.setTextColor(Color.parseColor("white"));
-            action.setGravity(Gravity.CENTER);
-            headerRow.addView(action);
+            DatabaseReference userAuthDR = FirebaseDatabase.getInstance().getReference();
+            userAuthDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot users : snapshot.getChildren()){
+                        User user = users.getValue(User.class);
+                        if(mAuth.getCurrentUser().getEmail().equals(Validator.decodeFromFirebaseKey(user.getEmailId()))){
+                            if(user.getUserLevel() > 2){
+                                TextView action = new TextView(getActivity());
+                                action.setText("  Actions  ");
+                                action.setTextColor(Color.parseColor("white"));
+                                action.setGravity(Gravity.CENTER);
+                                headerRow.addView(action);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
             headerRow.setBackgroundColor(Color.argb(200,33,150,243));
             headerRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
             coronaActiveTable.addView(headerRow,lp);

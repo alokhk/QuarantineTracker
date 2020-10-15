@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:830292726614:android:e7c48b229a6e1c04d6fcf7",
+        "mobilesdk_app_id": "1:830292726614:android:f702c5c31800e8c0d6fcf7",
         "android_client_info": {
-          "package_name": "com.ak86.quarantinetracker"
+          "package_name": "com.ak86.staysafe"
         }
       },
       "oauth_client": [

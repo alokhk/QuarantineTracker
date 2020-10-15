@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

@@ -10,5 +10,12 @@
         <item name="colorPrimaryDark">#223442</item>
         <item name="colorAccent">#95AFBA</item>
     </style>
+    <style name="ToolbarTitleAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20dp</item>
+        <!-- include other attributes you want to change: textColor, textStyle, etc -->
+    </style>
 
+    <style name="ToolbarSubtitleAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">10dp</item>
+    </style>
 </resources>

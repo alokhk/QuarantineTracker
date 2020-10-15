@@ -1,8 +1,5 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
-import android.nfc.cardemulation.OffHostApduService;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CoronaPositivePerson {

@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,8 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getSupportActionBar().setLogo(R.drawable.image);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("StaySafe");
 
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);

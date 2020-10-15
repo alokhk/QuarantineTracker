@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context=".ManageUserActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:alpha="255"
+        android:cropToPadding="false"
+        android:elevation="1dp"
+        app:srcCompat="@drawable/access_levels" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,23 +27,8 @@
             <TableLayout
                 android:id="@+id/usersTable"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
             </TableLayout>
         </LinearLayout>
     </ScrollView>

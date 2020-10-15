@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -111,7 +111,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                 for(DataSnapshot users : snapshot.getChildren()){
                     user = users.getValue(User.class);
                     if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
-                        if(user.getUserLevel() > 2){
+                        if(user.getUserLevel() > 1){
                                 addButton.setVisibility(View.VISIBLE);
                                 medDateButton.setVisibility(View.VISIBLE); }
                     }
@@ -184,7 +184,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                         for(DataSnapshot users : snapshot.getChildren()){
                             user = users.getValue(User.class);
                             if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
-                                if(user.getUserLevel() > 2 && !blockOwner.equals(currentUser)){
+                                if(user.getUserLevel() > 1 && !blockOwner.equals(currentUser)){
                                     TextView actions = new TextView(getApplicationContext());
                                     actions.setText("   Actions  ");
                                     actions.setTextColor(Color.parseColor("white"));
@@ -305,7 +305,7 @@ public class BlockDetailActivity extends AppCompatActivity {
                             for(DataSnapshot users : snapshot.getChildren()){
                                 user = users.getValue(User.class);
                                 if(Objects.equals(mAuth.getCurrentUser().getEmail(), Validator.decodeFromFirebaseKey(user.getEmailId()))){
-                                    if(user.getUserLevel() > 2 && !blockOwner.equals(currentUser)){
+                                    if(user.getUserLevel() > 1 && !blockOwner.equals(currentUser)){
                                         if(!person.isCoronaPositive()){
                                             coronaPositive.setEnabled(true);
                                         }

@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class LandingActivity extends AppCompatActivity {
 
@@ -55,6 +54,7 @@ public class LandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+        getSupportActionBar().setTitle("StaySafe Dashboard");
         mAuth = FirebaseAuth.getInstance();
         totalBlocks = findViewById(R.id.totalQuarantineBlocksFd);
         overallCapacity = findViewById(R.id.totalCapacityFd);

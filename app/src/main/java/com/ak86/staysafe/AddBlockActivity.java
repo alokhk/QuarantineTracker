@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.service.autofill.Dataset;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -64,6 +63,7 @@ public class AddBlockActivity extends AppCompatActivity {
         numberPicker.setMaxValue(displayedValues.length-1);
         numberPicker.setDisplayedValues(displayedValues);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add New Block");
         usersListDR = FirebaseDatabase.getInstance().getReference();
         usersListDR.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -141,7 +141,7 @@ public class AddBlockActivity extends AppCompatActivity {
              if (progressBar != null) {
                  progressBar.setVisibility(View.VISIBLE);
              }
-             Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0,Date.from(Instant.EPOCH), Date.from(Instant.EPOCH), Date.from(Instant.EPOCH));
+             Block newBlock = new Block(blockName, blockDescr, blockInCharge, blockCapacity, 0, new Date(), new Date(), new Date());
              usersListDR.child("blocks").child(blockName).setValue(newBlock)
                      .addOnSuccessListener(new OnSuccessListener<Void>(){
                  @Override

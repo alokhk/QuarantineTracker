@@ -1,9 +1,10 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class ManageBlockActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_block);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Manage Blocks");
+        Objects.requireNonNull(getSupportActionBar()).setSubtitle(Html.fromHtml("<small>Long Press to Edit</small>"));
         tableBlocksList = findViewById(R.id.tableBlocksList);
         progressBar = findViewById(R.id.progressBarManageBlock);
         blockListReference = FirebaseDatabase.getInstance().getReference().child("blocks");
@@ -185,7 +187,6 @@ public class ManageBlockActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             tableBlocksList.addView(tableRow,lp);
         }
-        Toast.makeText(getApplicationContext(),"Long press table rows to update data",Toast.LENGTH_LONG).show();
     }
 /****************long press popup to edit*************************************************************************************************/
     private void popupAndEditBlock(final String blockName, DataSnapshot snapshot){

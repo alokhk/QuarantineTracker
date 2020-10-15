@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

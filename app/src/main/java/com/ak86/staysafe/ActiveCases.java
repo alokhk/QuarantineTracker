@@ -1,14 +1,11 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -23,8 +20,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -146,7 +141,6 @@ public class ActiveCases extends Fragment {
                                     btnNegativePerson.setCornerRadius(8);
                                     btnNegativePerson.setTextColor(Color.argb(255,33,150,243));
                                     btnNegativePerson.setBackgroundColor(Color.parseColor("white"));
-                                    Toast.makeText(getActivity(),"Long press table rows to update data",Toast.LENGTH_LONG).show();
                                     btnNegativePerson.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {

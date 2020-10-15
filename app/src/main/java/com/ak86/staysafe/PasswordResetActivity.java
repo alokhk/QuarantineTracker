@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +27,8 @@ public class PasswordResetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_reset);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Recover Password");
 
         inputEmail = findViewById(R.id.forgotPasswordEmail);
         btnReset = findViewById(R.id.btnReset);
@@ -70,10 +72,11 @@ public class PasswordResetActivity extends AppCompatActivity {
                         });
             }
         });
+    }
 
-
-
-
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ak86.quarantinetracker">
+    package="com.ak86.staysafe">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="StaySafe"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ManageUserActivity"></activity>
-        <activity android:name=".OccupancyStateReport" />
-        <activity android:name=".CoronaActivity" />
+        <activity android:name="com.ak86.staysafe.ManageUserActivity"></activity>
+        <activity android:name="com.ak86.staysafe.OccupancyStateReport" />
+        <activity android:name="com.ak86.staysafe.CoronaActivity" />
         <activity
-            android:name=".ManageBlockActivity"
+            android:name="com.ak86.staysafe.ManageBlockActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".BarrackTypeActivity"
+            android:name="com.ak86.staysafe.BarrackTypeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".BlockDetailActivity" />
+        <activity android:name="com.ak86.staysafe.BlockDetailActivity" />
         <activity
-            android:name=".PasswordResetActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".CreateNewUser"
+            android:name="com.ak86.staysafe.PasswordResetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddBlockActivity"
+            android:name="com.ak86.staysafe.CreateNewUser"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LandingActivity"
-            android:label="@string/title_activity_block"
+            android:name="com.ak86.staysafe.AddBlockActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.ak86.staysafe.LandingActivity"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ak86.staysafe.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

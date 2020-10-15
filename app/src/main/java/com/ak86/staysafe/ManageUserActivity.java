@@ -1,4 +1,4 @@
-package com.ak86.quarantinetracker;
+package com.ak86.staysafe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -7,18 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +40,7 @@ public class ManageUserActivity extends AppCompatActivity {
         progressBarManageUsers = findViewById(R.id.progressBarManageUsers);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Manage Users");
-        Objects.requireNonNull(getSupportActionBar()).setSubtitle("Long Press Users to Edit");
+        Objects.requireNonNull(getSupportActionBar()).setSubtitle(Html.fromHtml("<small>Long Press to Edit</small>"));
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(true);
 
 
@@ -84,6 +81,7 @@ public class ManageUserActivity extends AppCompatActivity {
             //*********************** USER NAME ************************//*
             TextView userName = new TextView(getApplicationContext());
             userName.setText(Validator.decodeFromFirebaseKey(user.getUsername()));
+            userName.setHeight(70);
             userName.setGravity(Gravity.CENTER);
             tableRow.addView(userName);
             //*********************** EMAIL DESCR ************************//*

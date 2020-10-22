@@ -47,7 +47,7 @@ public class BlockDetailsAdapter extends RecyclerView.Adapter<BlockDetailsAdapte
             holder.blockMedDate.setText(sdf.format(block.getMedicalDate()));
         }
 
-        if(block.getBlockDescr().equals("Isolation") || block.getBlockDescr().equals("Holding") || block.getBlockOccupied()==0 ){
+        if(block.getBlockDescr().equals("Isolation") || block.getBlockDescr().equals("Holding") || block.getBlockDescr().equals("Transit") || block.getBlockOccupied()==0 ){
             holder.blockEndDate.setVisibility(View.GONE);
             holder.blockMedDate.setVisibility(View.GONE);
             holder.tvQE.setVisibility(View.GONE);

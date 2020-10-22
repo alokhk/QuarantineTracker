@@ -146,6 +146,12 @@ public class OccupancyStateReport extends AppCompatActivity {
         medDate.setGravity(Gravity.CENTER);
         tableRow.addView(medDate);
 
+        TextView remarks = new TextView(getApplicationContext());
+        remarks.setText(block.getBlockDescr());
+        remarks.setTextColor(Color.argb(255,33,150,243));
+        remarks.setGravity(Gravity.CENTER);
+        tableRow.addView(remarks);
+
         tableRow.setMinimumHeight(50);
         tableRow.setElevation(4);
         tableRow.setBackgroundColor(Color.argb(100,236,235,232));

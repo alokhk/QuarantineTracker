@@ -26,7 +26,7 @@ public class BarrackTypeActivity extends AppCompatActivity {
 
     private EditText barrackTypeFd;
     private Button btnAdd;
-    private DatabaseReference writeBarrackTypeDR, listBarrackTypeDR;
+    private DatabaseReference writeBarrackTypeDR, listBarrackTypeDR, deleteBarrackTypeDR;
     private TableLayout barrackTypeTable;
     private ProgressBar progressBar;
     @Override
@@ -122,7 +122,7 @@ public class BarrackTypeActivity extends AppCompatActivity {
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //deleteBlock(type.getBlockName());
+                    deleteBlock(type);
                 }
             });
             tableRow.addView(actionButton);
@@ -133,6 +133,11 @@ public class BarrackTypeActivity extends AppCompatActivity {
             barrackTypeTable.addView(tableRow,lp);
         }
 
+    }
+
+    private void deleteBlock(String blockType){
+        deleteBarrackTypeDR = FirebaseDatabase.getInstance().getReference();
+        deleteBarrackTypeDR.child("barrackType").child(Validator.decodeFromFirebaseKey(blockType)).removeValue();
     }
 
     @Override
